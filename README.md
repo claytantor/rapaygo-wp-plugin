@@ -1,6 +1,3 @@
-claytantor
-l&MDclYBv$UE#fP5ch
-
 Folders in your plugin might include:
 
 css or styles for stylesheets
