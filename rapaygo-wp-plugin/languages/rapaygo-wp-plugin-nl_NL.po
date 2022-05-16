@@ -98,7 +98,7 @@ msgstr ""
 
 #: rapaygo_discounts_menu.php:53 rapaygo_settings.php:187
 #: rapaygo_settings.php:423
-msgid "WP Simple Cart Homepage"
+msgid "Rapaygo Cart Plugin Homepage"
 msgstr "WP Simpel Winkelwagen Homepagina"
 
 #: rapaygo_discounts_menu.php:61

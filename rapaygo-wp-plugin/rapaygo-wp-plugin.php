@@ -50,28 +50,28 @@ include_once('class-coupon.php');
 include_once('includes/rapaygo-cart-functions.php');
 include_once('includes/admin/rapaygo_menu_main.php');
 include_once('includes/admin/rapaygo_tinymce.php');
-// rapaygo_menu_addons.php
+
 
 rapaygo_check_and_start_session();
 
 function always_show_cart_handler( $atts ) {
-    return print_wp_shopping_cart( $atts );
+    return print_rapaygo_shopping_cart( $atts );
 }
 
 function show_rapaygo_handler( $atts ) {
     $output = "";
     if ( cart_not_empty() ) {
-	$output = print_wp_shopping_cart( $atts );
+	$output = print_rapaygo_shopping_cart( $atts );
     }
     return $output;
 }
 
 function shopping_cart_show( $content ) {
-    if ( strpos( $content, "<!--show-wp-shopping-cart-->" ) !== FALSE ) {
+    if ( strpos( $content, "<!--show-rapaygo-shopping-cart-->" ) !== FALSE ) {
 	if ( cart_not_empty() ) {
 	    $content	 = preg_replace( '/<p>\s*<!--(.*)-->\s*<\/p>/i', "<!--$1-->", $content );
-	    $matchingText	 = '<!--show-wp-shopping-cart-->';
-	    $replacementText = print_wp_shopping_cart();
+	    $matchingText	 = '<!--show-rapaygo-shopping-cart-->';
+	    $replacementText = print_rapaygo_shopping_cart();
 	    $content	 = str_replace( $matchingText, $replacementText, $content );
 	}
     }
@@ -79,15 +79,15 @@ function shopping_cart_show( $content ) {
 }
 
 // Reset cart option
-if ( isset( $_REQUEST[ "reset_wp_cart" ] ) && ! empty( $_REQUEST[ "reset_wp_cart" ] ) ) {
-    reset_wp_cart();
+if ( isset( $_REQUEST[ "reset_rapaygo_cart" ] ) && ! empty( $_REQUEST[ "reset_rapaygo_cart" ] ) ) {
+    reset_rapaygo_cart();
 }
 
 //Clear the cart if the customer landed on the thank you page (if this option is enabled)
 if ( get_option( 'rapaygo_reset_after_redirection_to_return_page' ) ) {
     //TODO - remove this field altogether later. Cart will always be reset using query prameter on the thank you page.
     if ( get_option( 'cart_return_from_paypal_url' ) == cart_current_page_url() ) {
-	reset_wp_cart();
+	reset_rapaygo_cart();
     }
 }
 
@@ -145,7 +145,7 @@ function rapaygo_process_pp_smart_checkout() {
     }
 }
 
-function reset_wp_cart() {
+function reset_rapaygo_cart() {
     if ( ! isset( $_SESSION[ 'simpleCart' ] ) ) {
 	return;
     }
@@ -357,7 +357,7 @@ function rapaygo_cart_actions_handler() {
 	    rapaygo_update_cart_items_record();
 	}
 	if ( count( $_SESSION[ 'simpleCart' ] ) < 1 ) {
-	    reset_wp_cart();
+	    reset_rapaygo_cart();
 	}
     } else if ( isset( $_POST[ 'rapaygo_coupon_code' ] ) ) {
 	$nonce = $_REQUEST[ '_wpnonce' ];
@@ -733,7 +733,7 @@ function show_rapaygo_cart_widget( $args ){
 
     echo $before_widget;
     echo $before_title . $cart_title . $after_title;
-    echo print_wp_shopping_cart();
+    echo print_rapaygo_shopping_cart();
     echo $after_widget;
 }
 

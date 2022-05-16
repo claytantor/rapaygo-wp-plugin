@@ -2,7 +2,7 @@
 global $carts_cnt;
 $carts_cnt = 0;
 
-function print_wp_shopping_cart( $args = array() ) {
+function print_rapaygo_shopping_cart( $args = array() ) {
 	$output = '';
 	global $carts_cnt;
 	$carts_cnt ++;
@@ -50,7 +50,7 @@ function print_wp_shopping_cart( $args = array() ) {
 	if ( empty( $return ) ) {
 		$return = WP_CART_SITE_URL . '/';
 	}
-	$return_url = add_query_arg( 'reset_wp_cart', '1', $return );
+	$return_url = add_query_arg( 'reset_rapaygo_cart', '1', $return );
 
 	$urls .= '<input type="hidden" name="return" value="' . $return_url . '" />';
 

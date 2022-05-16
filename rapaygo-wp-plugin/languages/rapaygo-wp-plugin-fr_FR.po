@@ -313,8 +313,8 @@ msgstr "Réglages"
 #~ msgid "Display Rapaygo Shopping Cart."
 #~ msgstr "Afficher le panier WP Paypal"
 
-#~ msgid "show-wp-shopping-cart"
-#~ msgstr "show-wp-shopping-cart"
+#~ msgid "show-rapaygo-shopping-cart"
+#~ msgstr "show-rapaygo-shopping-cart"
 
 #~ msgid ""
 #~ "2. To add the shopping cart to a post or page (eg. checkout page) simply "

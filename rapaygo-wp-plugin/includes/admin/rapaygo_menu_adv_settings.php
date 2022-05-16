@@ -75,7 +75,7 @@ function show_rapaygo_cart_adv_settings_page() {
 
     <div class="rapaygo_yellow_box">
         <p><?php _e( "For more information, updates, detailed documentation and video tutorial, please visit:", "rapaygo-wp-plugin" ); ?><br />
-    	<a href="https://www.tipsandtricks-hq.com/rapaygo-wp-plugin-plugin-768" target="_blank"><?php _e( "WP Simple Cart Homepage", "rapaygo-wp-plugin" ); ?></a></p>
+    	<a href="https://www.tipsandtricks-hq.com/rapaygo-wp-plugin-plugin-768" target="_blank"><?php _e( "Rapaygo Cart Plugin Homepage", "rapaygo-wp-plugin" ); ?></a></p>
     </div>
 
     <form method="post" action="">

@@ -77,8 +77,8 @@ function rapaygo_settings_interface() {
                 show_rapaygo_cart_adv_settings_page();
                 break;
         }
-    } else {
-        include_once (RAPAYGO_CART_PATH . 'includes/admin/rapaygo_menu_general_settings.php');
+    } else { 
+        include_once (RAPAYGO_CART_PATH . 'includes/admin/rapaygo_menu_general_r_settings.php');
         rapaygo_show_general_settings_page();
     }
     echo '</div></div>';

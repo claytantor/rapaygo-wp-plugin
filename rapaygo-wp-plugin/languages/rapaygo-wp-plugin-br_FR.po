@@ -99,7 +99,7 @@ msgstr ""
 
 #: rapaygo_discounts_menu.php:53 rapaygo_settings.php:190
 #: rapaygo_settings.php:431
-msgid "WP Simple Cart Homepage"
+msgid "Rapaygo Cart Plugin Homepage"
 msgstr "Pajenn degemer WP Simple Cart"
 
 #: rapaygo_discounts_menu.php:61

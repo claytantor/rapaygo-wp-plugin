@@ -369,7 +369,7 @@ msgstr ""
 #: includes/admin/rapaygo_menu_email_settings.php:60
 #: includes/admin/rapaygo_menu_general_settings.php:154
 #: includes/admin/rapaygo_menu_tools.php:29
-msgid "WP Simple Cart Homepage"
+msgid "Rapaygo Cart Plugin Homepage"
 msgstr ""
 
 #: includes/admin/rapaygo_menu_adv_settings.php:87

@@ -151,8 +151,8 @@ msgstr "For mer informasjon, oppdateringer og detaljert dokumentasjon gå til"
 
 #: rapaygo_discounts_menu.php:52 rapaygo_settings.php:173
 #: rapaygo_settings.php:367
-msgid "WP Simple Cart Homepage"
-msgstr "WP Simple Cart Homepage"
+msgid "Rapaygo Cart Plugin Homepage"
+msgstr "Rapaygo Cart Plugin Homepage"
 
 #: rapaygo_discounts_menu.php:60
 msgid "Coupon/Discount Settings"
