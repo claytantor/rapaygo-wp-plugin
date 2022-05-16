@@ -1,0 +1,55 @@
+
+/* Cart button TinyMCE icon */
+i.mce-i-wp-cart-tinymce::before {
+    content: "\f174";
+    font: 400 20px/1 dashicons;
+    vertical-align: top;
+}
+
+.rapaygo_yellow_box {
+    background: #FFF6D5; 
+    border: 1px solid #D1B655;
+    color: #3F2502;
+    margin: 10px 0;
+    padding: 5px 5px 5px 10px;
+    text-shadow: 1px 1px #FFFFFF;
+}
+
+/*----- Addons Listing ----- */
+.rapaygo_addon_item_canvas{
+    background-color: white;
+    font-family:sans-serif,arial;
+    font-size:12px;
+    border:1px solid #ddd;
+    box-sizing: border-box;
+    display:block;
+    float:left;
+    margin:3px 12px 12px 0;
+    padding:15px;
+    position:relative;
+    width:300px;
+    height:400px;
+}
+.rapaygo_addon_item_canvas:hover{border-color:#d6d6d6;}
+.rapaygo_addon_item_thumb {position: relative}
+.rapaygo_addon_item_thumb img {padding:5px; border: 1px solid #c7d2b4;}
+.rapaygo_addon_item_thumb a img {border: 1px solid #ccc;}
+.rapaygo_addon_item_body{line-height:22px;height:170px;overflow:hidden;}
+.rapaygo_addon_item_name{font-size:16px;font-weight:bold;text-align: center;margin:10px 10px 10px 0px;}
+.rapaygo_addon_item_description{margin:10px 10px 5px 0px;text-align:justify;overflow:hidden;height:70px;}
+.rapaygo_addon_clear{clear:both;}
+.rapaygo_addon_item_details_link{
+    text-align: center;
+}
+.rapaygo_addon_item_details_link a{
+    border: 3px solid #2d3140;
+    color: #2d3140;
+    display: inline-block;
+    padding: 5px 15px;
+    text-decoration: none !important;
+}
+.rapaygo_addon_item_details_link a:hover{
+    background-color: #2d3140;
+    color: #FFF;
+}
+/*----- END Addons Listing ----- */
