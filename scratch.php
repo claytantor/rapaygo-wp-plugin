@@ -1,20 +1,5 @@
 
 
-974088390297391106
-
-
-http://localhost:5200/bot/discord/interactions
-
-
-https://discord.com/api/oauth2/authorize?client_id=974088390297391106&permissions=274878089216&scope=bot
-
-https://discord.com/api/oauth2/authorize?client_id=974088390297391106&permissions=18432&scope=bot%20applications.commands
-
-
-
-claytantor
-vkLHD#ZScj3#hl)mcP
-
 
 
 
