@@ -131,7 +131,7 @@ function print_rapaygo_shopping_cart( $args = array() ) {
 
 			$output .= "<td class='rapaygo_cart_qty_td' style='text-align: center'><form method=\"post\"  action=\"\" name='pcquantity_" . $uniqid . "' style='display: inline'>" . wp_nonce_field( 'rapaygo_cquantity', '_wpnonce', true, false ) . '
                 <input type="hidden" name="rapaygo_product" value="' . htmlspecialchars( $item['name'] ) . "\" />
-	        <input type='hidden' name='cquantity' value='1' /><input type='number' class='rapaygo_cart_item_qty' name='quantity' value='" . esc_attr( $item['quantity'] ) . "' min='0' step='1' size='3' onchange='document.pcquantity_" . $uniqid . ".submit();' onkeypress='document.getElementById(\"pinfo\").style.display = \"\";' /></form></td>
+	        <input type='hidden' name='cquantity' value='1' /><input style='width: 40px;' type='number' class='rapaygo_cart_item_qty' name='quantity' value='" . esc_attr( $item['quantity'] ) . "' min='0' step='1' size='3' onchange='document.pcquantity_" . $uniqid . ".submit();' onkeypress='document.getElementById(\"pinfo\").style.display = \"\";' /></form></td>
 	        <td class='rapaygo_cart_price_td'>" . print_payment_currency( ( $item['price'] * $item['quantity'] ), $rapaygo_symbol, $decimal ) . "</td>
 	        <td class='rapaygo_remove_item_td'><form method=\"post\" action=\"\" class=\"rapaygo_cart_remove_item_form\">" . wp_nonce_field( 'rapaygo_delcart', '_wpnonce', true, false ) . '
 	        <input type="hidden" name="rapaygo_product" value="' . esc_attr( $item['name'] ) . "\" />
@@ -214,7 +214,7 @@ function print_rapaygo_shopping_cart( $args = array() ) {
 		$style   = 'display:none !important" data-rapaygo-hidden="1';
 		if ( $count ) {
 
-			$btn_checkout = '<a class="btn w-100 rapaygo_cart_checkout_button_' . $carts_cnt . '">Checkout Now</a>';
+			$btn_checkout = '<a class="rapaygo_button rapaygo_cart_checkout_button_' . $carts_cnt . '">Checkout Now</a>';
 			$output      .= '<div class="rapaygo_cart_checkout_button_container">' . $btn_checkout . '</div>';
 
 			// the add to cart button is hidden until other information is filled in			
@@ -234,8 +234,14 @@ function print_rapaygo_shopping_cart( $args = array() ) {
 
 			$address_fields_zip = '<input class="rapaygo_cart_addr_form" type="text" prompt="Zip" name="zip" value="' . esc_attr( $zip ) . '" size="30" />';
 
-			$output      .= '<div class="rapaygo_cart_address_container">'. $address_fields_fname . $address_fields_lname . 
-				$address_fields_email . $address_fields_phone . $address_fields_address . $address_fields_city . $address_fields_state . $address_fields_zip . '</div>';
+			$address_fields_country = '<input class="rapaygo_cart_addr_form" type="text" prompt="Country" name="country" value="' . esc_attr( $country ) . '" size="30" />';
+
+			$address_style = 'display:none !important" data-rapaygo-hidden="1';
+
+			$output      .= '<div style="' . $address_style . '" class="rapaygo_cart_address_container">'. $address_fields_fname . $address_fields_lname . 
+				$address_fields_email . $address_fields_phone . $address_fields_address . $address_fields_city . $address_fields_state . $address_fields_zip . $address_fields_country . '</div>';
+
+			
 
 
 			// $checkout_button_img_src = RAPAYGO_CART_URL . '/images/' . ( __( 'rapaygo_checkout_EN.png', 'rapaygo-wp-plugin' ) );
@@ -265,7 +271,7 @@ function print_rapaygo_shopping_cart( $args = array() ) {
 		$output .= '</td></tr>';
 		?>
 		<script>
-			jQuery(document).ready(function ($) {
+			jQuery(document).ready(function ($) {				
 				$('.rapaygo_cart_checkout_button_<?php echo $carts_cnt; ?>').click(function () {
 					$('.rapaygo_cart_checkout_button_<?php echo $carts_cnt; ?>').attr('disabled', 'disabled');
 					$('.rapaygo_cart_checkout_button_<?php echo $carts_cnt; ?>').attr('data-rapaygo-hidden', '1');
@@ -273,6 +279,26 @@ function print_rapaygo_shopping_cart( $args = array() ) {
 				});
 			});
 		</script>
+		<style>
+			.rapaygo_cart_checkout_button_<?php echo $carts_cnt; ?> {
+				
+			}
+			a.rapaygo_button {
+				background-color: #fcba03;
+				color: #fff;
+				padding: 30px;
+				border-radius: 5px;
+				font-size: 1.0em;
+				font-weight: bold;
+				display: block;
+				margin: 10px auto;
+				text-align: center;
+			}
+			.rapaygo_button:hover {
+				background-color: #8c6803;
+				color: #fff;
+			}
+		</style>
 		<?php
 	}
 	$output .= '</table></div>';
