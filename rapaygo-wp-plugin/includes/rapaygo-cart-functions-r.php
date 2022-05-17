@@ -29,14 +29,14 @@ function print_rapaygo_shopping_cart( $args = array() ) {
 	$defaultSymbol          = get_option( 'cart_currency_symbol' );
 	$defaultEmail           = get_option( 'cart_paypal_email' );
 	if ( ! empty( $defaultCurrency ) ) {
-		$paypal_currency = $defaultCurrency;
+		$rapaygo_currency = $defaultCurrency;
 	} else {
-		$paypal_currency = __( 'USD', 'rapaygo-wp-plugin' );
+		$rapaygo_currency = __( 'USD', 'rapaygo-wp-plugin' );
 	}
 	if ( ! empty( $defaultSymbol ) ) {
-		$paypal_symbol = $defaultSymbol;
+		$rapaygo_symbol = $defaultSymbol;
 	} else {
-		$paypal_symbol = __( '$', 'rapaygo-wp-plugin' );
+		$rapaygo_symbol = __( '$', 'rapaygo-wp-plugin' );
 	}
 
 	if ( ! empty( $defaultEmail ) ) {
@@ -108,7 +108,7 @@ function print_rapaygo_shopping_cart( $args = array() ) {
 			$postage_cost = 0;
 		}
 
-		$item_tpl   = "{name: '%s', quantity: '%d', price: '%s', currency: '" . $paypal_currency . "'}";
+		$item_tpl   = "{name: '%s', quantity: '%d', price: '%s', currency: '" . $rapaygo_currency . "'}";
 		$items_list = '';
 
 		foreach ( $_SESSION['simpleCart'] as $item ) {
@@ -132,7 +132,7 @@ function print_rapaygo_shopping_cart( $args = array() ) {
 			$output .= "<td class='rapaygo_cart_qty_td' style='text-align: center'><form method=\"post\"  action=\"\" name='pcquantity_" . $uniqid . "' style='display: inline'>" . wp_nonce_field( 'rapaygo_cquantity', '_wpnonce', true, false ) . '
                 <input type="hidden" name="rapaygo_product" value="' . htmlspecialchars( $item['name'] ) . "\" />
 	        <input type='hidden' name='cquantity' value='1' /><input type='number' class='rapaygo_cart_item_qty' name='quantity' value='" . esc_attr( $item['quantity'] ) . "' min='0' step='1' size='3' onchange='document.pcquantity_" . $uniqid . ".submit();' onkeypress='document.getElementById(\"pinfo\").style.display = \"\";' /></form></td>
-	        <td class='rapaygo_cart_price_td'>" . print_payment_currency( ( $item['price'] * $item['quantity'] ), $paypal_symbol, $decimal ) . "</td>
+	        <td class='rapaygo_cart_price_td'>" . print_payment_currency( ( $item['price'] * $item['quantity'] ), $rapaygo_symbol, $decimal ) . "</td>
 	        <td class='rapaygo_remove_item_td'><form method=\"post\" action=\"\" class=\"rapaygo_cart_remove_item_form\">" . wp_nonce_field( 'rapaygo_delcart', '_wpnonce', true, false ) . '
 	        <input type="hidden" name="rapaygo_product" value="' . esc_attr( $item['name'] ) . "\" />
 	        <input type='hidden' name='delcart' value='1' />
@@ -171,11 +171,11 @@ function print_rapaygo_shopping_cart( $args = array() ) {
 	if ( $count ) {
 		if ( $postage_cost != 0 ) {
 			$output .= "
-                <tr class='rapaygo_cart_subtotal'><td colspan='2' style='font-weight: bold; text-align: right;'>" . ( __( 'Subtotal', 'rapaygo-wp-plugin' ) ) . ": </td><td style='text-align: center'>" . print_payment_currency( $total, $paypal_symbol, $decimal ) . "</td><td></td></tr>
-                <tr class='rapaygo_cart_shipping'><td colspan='2' style='font-weight: bold; text-align: right;'>" . ( __( 'Shipping', 'rapaygo-wp-plugin' ) ) . ": </td><td style='text-align: center'>" . print_payment_currency( $postage_cost, $paypal_symbol, $decimal ) . '</td><td></td></tr>';
+                <tr class='rapaygo_cart_subtotal'><td colspan='2' style='font-weight: bold; text-align: right;'>" . ( __( 'Subtotal', 'rapaygo-wp-plugin' ) ) . ": </td><td style='text-align: center'>" . print_payment_currency( $total, $rapaygo_symbol, $decimal ) . "</td><td></td></tr>
+                <tr class='rapaygo_cart_shipping'><td colspan='2' style='font-weight: bold; text-align: right;'>" . ( __( 'Shipping', 'rapaygo-wp-plugin' ) ) . ": </td><td style='text-align: center'>" . print_payment_currency( $postage_cost, $rapaygo_symbol, $decimal ) . '</td><td></td></tr>';
 		}
 
-		$output .= "<tr class='rapaygo_cart_total'><td colspan='2' style='font-weight: bold; text-align: right;'>" . ( __( 'Total', 'rapaygo-wp-plugin' ) ) . ": </td><td class='rapaygo_cart_total_td'>" . print_payment_currency( ( $total + $postage_cost ), $paypal_symbol, $decimal ) . '</td><td></td></tr>';
+		$output .= "<tr class='rapaygo_cart_total'><td colspan='2' style='font-weight: bold; text-align: right;'>" . ( __( 'Total', 'rapaygo-wp-plugin' ) ) . ": </td><td class='rapaygo_cart_total_td'>" . print_payment_currency( ( $total + $postage_cost ), $rapaygo_symbol, $decimal ) . '</td><td></td></tr>';
 
 		if ( isset( $_SESSION['rapaygo_cart_action_msg'] ) && ! empty( $_SESSION['rapaygo_cart_action_msg'] ) ) {
 			$output .= '<tr class="rapaygo_cart_action_msg"><td colspan="4"><span class="rapaygo_cart_action_msg">' . $_SESSION['rapaygo_cart_action_msg'] . '</span></td></tr>';
@@ -193,212 +193,87 @@ function print_rapaygo_shopping_cart( $args = array() ) {
                 </td></tr>';
 		}
 
-		$paypal_checkout_url = RAPAYGO_CART_LIVE_PAYPAL_URL;
+		$rapaygo_checkout_url = RAPAYGO_CART_SUBMIT_URL;
 		if ( get_option( 'rapaygo_enable_sandbox' ) ) {
-			$paypal_checkout_url = RAPAYGO_CART_SANDBOX_PAYPAL_URL;
+			$rapaygo_checkout_url = RAPAYGO_CART_DEV_SUBMIT_URL;
 		}
 
-		$form_target_code = '';
-		if ( get_option( 'rapaygo_open_pp_checkout_in_new_tab' ) ) {
-			$form_target_code = 'target="_blank"';
-		}
+		// $form_target_code = '';
+		// if ( get_option( 'rapaygo_open_pp_checkout_in_new_tab' ) ) {
+		// 	$form_target_code = 'target="_blank"';
+		// }
 
-		$output = apply_filters( 'rapaygo_before_checkout_form', $output );
+		// $output = apply_filters( 'rapaygo_before_checkout_form', $output );
 
 		$output .= "<tr class='rapaygo_checkout_form'><td colspan='4'>";
-		$output .= '<form action="' . $paypal_checkout_url . '" method="post" ' . $form_target_code . '>';
+		$output .= '<form action="' . $rapaygo_checkout_url . '" method="post" ' . $form_target_code . '>';
 		$output .= $form;
-		$style   = get_option( 'rapaygo_disable_standard_checkout' ) && get_option( 'rapaygo_enable_pp_smart_checkout' ) ? 'display:none !important" data-rapaygo-hidden="1' : '';
+		// $style   = get_option( 'rapaygo_disable_standard_checkout' ) && get_option( 'rapaygo_enable_pp_smart_checkout' ) ? 'display:none !important" data-rapaygo-hidden="1' : '';
+
+		// we need to hide the pay button until other information is filled in
+		$style   = 'display:none !important" data-rapaygo-hidden="1';
 		if ( $count ) {
-			$checkout_button_img_src = RAPAYGO_CART_URL . '/images/' . ( __( 'rapaygo_checkout_EN.png', 'rapaygo-wp-plugin' ) );
-			$output                 .= '<input type="image" src="' . apply_filters( 'rapaygo_cart_checkout_button_image_src', $checkout_button_img_src ) . '" name="submit" class="rapaygo_cart_checkout_button rapaygo_cart_checkout_button_' . $carts_cnt . '" style="' . $style . '" alt="' . ( __( "Make payments with Rapaygo - Everything you need to accept Bitcoin payments", 'rapaygo-wp-plugin' ) ) . '" />';
+
+			$btn_checkout = '<a class="btn w-100 rapaygo_cart_checkout_button_' . $carts_cnt . '">Checkout Now</a>';
+			$output      .= '<div class="rapaygo_cart_checkout_button_container">' . $btn_checkout . '</div>';
+
+			// the add to cart button is hidden until other information is filled in			
+			$address_fields_fname = '<input class="rapaygo_cart_addr_form" type="text" prompt="First name" name="first_name" value="' . esc_attr( $fname ) . '" size="30" />';
+
+			$address_fields_lname = '<input class="rapaygo_cart_addr_form" type="text" prompt="Last name" name="last_name" value="' . esc_attr( $lname ) . '" size="30" />';
+
+			$address_fields_email = '<input class="rapaygo_cart_addr_form" type="text" prompt="Email" name="email" value="' . esc_attr( $email ) . '" size="30" />';
+
+			$address_fields_phone = '<input class="rapaygo_cart_addr_form" type="text" prompt="Phone" name="phone" value="' . esc_attr( $phone ) . '" size="30" />';
+
+			$address_fields_address = '<input class="rapaygo_cart_addr_form" type="text" prompt="Address" name="address" value="' . esc_attr( $address ) . '" size="30" />';
+
+			$address_fields_city = '<input class="rapaygo_cart_addr_form" type="text" prompt="City" name="city" value="' . esc_attr( $city ) . '" size="30" />';
+
+			$address_fields_state = '<input class="rapaygo_cart_addr_form" type="text" prompt="State" name="state" value="' . esc_attr( $state ) . '" size="30" />';
+
+			$address_fields_zip = '<input class="rapaygo_cart_addr_form" type="text" prompt="Zip" name="zip" value="' . esc_attr( $zip ) . '" size="30" />';
+
+			$output      .= '<div class="rapaygo_cart_address_container">'. $address_fields_fname . $address_fields_lname . 
+				$address_fields_email . $address_fields_phone . $address_fields_address . $address_fields_city . $address_fields_state . $address_fields_zip . '</div>';
+
+
+			// $checkout_button_img_src = RAPAYGO_CART_URL . '/images/' . ( __( 'rapaygo_checkout_EN.png', 'rapaygo-wp-plugin' ) );
+			// $output                 .= '<input type="image" src="' . apply_filters( 'rapaygo_cart_checkout_button_image_src', $checkout_button_img_src ) . '" name="submit" class="rapaygo_cart_checkout_button rapaygo_cart_checkout_button_' . $carts_cnt . '" style="' . $style . '" alt="' . ( __( "Make payments with Rapaygo - Everything you need to accept Bitcoin payments", 'rapaygo-wp-plugin' ) ) . '" />';
 		}
 
 		$output .= $urls . '
             <input type="hidden" name="business" value="' . $email . '" />
-            <input type="hidden" name="currency_code" value="' . $paypal_currency . '" />
+            <input type="hidden" name="currency_code" value="' . $rapaygo_currency . '" />
             <input type="hidden" name="cmd" value="_cart" />
             <input type="hidden" name="upload" value="1" />
             <input type="hidden" name="rm" value="2" />
             <input type="hidden" name="charset" value="utf-8" />
             <input type="hidden" name="bn" value="TipsandTricks_SP" />';
 
-		$page_style_name = get_option( 'rapaygo_cart_paypal_co_page_style' );
-		if ( ! empty( $page_style_name ) ) {
-			$output .= '<input type="hidden" name="image_url" value="' . $page_style_name . '" />';
-		}
+		// $page_style_name = get_option( 'rapaygo_cart_paypal_co_page_style' );
+		// if ( ! empty( $page_style_name ) ) {
+		// 	$output .= '<input type="hidden" name="image_url" value="' . $page_style_name . '" />';
+		// }
+
 		$output .= rapaygo_cart_add_custom_field();
 
-		$extra_pp_fields = apply_filters( 'rapaygo_cart_extra_paypal_fields', '' ); //Can be used to add extra PayPal hidden input fields for the cart checkout
-		$output         .= $extra_pp_fields;
+		// $extra_pp_fields = apply_filters( 'rapaygo_cart_extra_paypal_fields', '' ); //Can be used to add extra PayPal hidden input fields for the cart checkout
+		// $output         .= $extra_pp_fields;
 
 		$output .= '</form>';
-		if ( get_option( 'rapaygo_enable_pp_smart_checkout' ) ) {
-			//Show PayPal Smart Payment Button
-                        
-                        //Some number formatting (before it is used in JS code.
-                        $formatted_total = rapaygo_number_format_price($total);
-                        $formatted_postage_cost = rapaygo_number_format_price($postage_cost);
-                        $totalpluspostage = ($total + $postage_cost);
-                        $formatted_totalpluspostage = rapaygo_number_format_price($totalpluspostage);
-                        
-			//check mode and if client ID is set for it
-			$client_id = get_option( 'rapaygo_enable_sandbox' ) ? get_option( 'rapaygo_pp_test_client_id' ) : get_option( 'rapaygo_pp_live_client_id' );
-			if ( empty( $client_id ) ) {
-				//client ID is not set
-				$output .= '<div style="color: red;">' . sprintf( __( 'PayPal Smart Checkout error: %s client ID is not set. Please set it on the Advanced Settings tab.', 'rapaygo-wp-plugin' ), get_option( 'rapaygo_enable_sandbox' ) ? 'Sandbox' : 'Live' ) . '</div>';
-			} else {
-				//checkout script should be inserted only once, otherwise it would produce JS error
-				if ( $carts_cnt <= 1 ) {
-					$output .= '<script src="https://www.paypalobjects.com/api/checkout.js"></script>';
-				}
-
-				$btn_layout = get_option( 'rapaygo_pp_smart_checkout_btn_layout' );
-				$btn_layout = empty( $btn_layout ) ? 'vertical' : $btn_layout;
-				$btn_size   = get_option( 'rapaygo_pp_smart_checkout_btn_size' );
-				$btn_size   = empty( $btn_size ) ? 'medium' : $btn_size;
-				$btn_shape  = get_option( 'rapaygo_pp_smart_checkout_btn_shape' );
-				$btn_shape  = empty( $btn_shape ) ? 'rect' : $btn_shape;
-				$btn_color  = get_option( 'rapaygo_pp_smart_checkout_btn_color' );
-				$btn_color  = empty( $btn_color ) ? 'gold' : $btn_color;
-
-				$pm_str = '';
-
-				$pm_credit = get_option( 'rapaygo_pp_smart_checkout_payment_method_credit' );
-				$pm_str   .= empty( $pm_credit ) ? '' : ', paypal.FUNDING.CREDIT';
-				$pm_elv    = get_option( 'rapaygo_pp_smart_checkout_payment_method_elv' );
-				$pm_str   .= empty( $pm_elv ) ? '' : ', paypal.FUNDING.ELV';
-
-				ob_start();
-				?>
-
-		<div class="wp-cart-paypal-button-container-<?php echo $carts_cnt; ?>"></div>
-
-		<script>
-
-			//		    var rapaygo_pp_proceed = false;
-			//		    var rapaygo_pp_actions;
-			var rapaygo_cci_do_submit = true;
-
-
-			paypal.Button.render({
-
-			env: '<?php echo get_option( 'rapaygo_enable_sandbox' ) ? 'sandbox' : 'production'; ?>',
-			style: {
-				layout: '<?php echo esc_js( $btn_layout ); ?>',
-				size: '<?php echo esc_js( $btn_size ); ?>',
-				shape: '<?php echo esc_js( $btn_shape ); ?>',
-				color: '<?php echo esc_js( $btn_color ); ?>'
-			},
-			funding: {
-				allowed: [paypal.FUNDING.CARD<?php echo $pm_str; ?>],
-				disallowed: []
-			},
-			client: {
-				sandbox: '<?php echo get_option( 'rapaygo_pp_test_client_id' ); ?>',
-				production: '<?php echo get_option( 'rapaygo_pp_live_client_id' ); ?>'
-			},
-			validate: function (actions) {
-				//			    rapaygo_pp_actions = actions;
-				//			    rapaygo_pp_actions.disable();
-			},
-			onClick: function () {
-				rapaygo_cci_do_submit = false;
-				var res = jQuery('.rapaygo_cart_checkout_button_<?php echo $carts_cnt; ?>').triggerHandler('click');
-				if (typeof res === "undefined" || res) {
-				//				    rapaygo_pp_actions.enable();
-				} else {
-				//				    rapaygo_pp_actions.disable();
-				}
-				rapaygo_cci_do_submit = true;
-			},
-			payment: function (data, actions) {
-				return actions.payment.create({
-				payment: {
-					transactions: [{
-						amount: {total: '<?php echo $formatted_totalpluspostage; ?>', currency: '<?php echo $paypal_currency; ?>',
-						details: {subtotal: '<?php echo $formatted_total; ?>', shipping: '<?php echo $formatted_postage_cost; ?>'}
-						},
-						item_list: {
-						items: [<?php echo $items_list; ?>]
-						}
-					}]
-				},
-				meta: {partner_attribution_id: 'TipsandTricks_SP'}
-				});
-			},
-			onError: function (error) {
-				console.log(error);
-				alert('<?php echo esc_js( __( 'Error occured during PayPal Smart Checkout process.', 'rapaygo-wp-plugin' ) ); ?>\n\n' + error);
-			},
-			onAuthorize: function (data, actions) {
-				jQuery("[class^='wp-cart-paypal-button-container']").hide();
-				jQuery('.rapaygo_cart_checkout_button').hide();
-				jQuery('.wpspsc-spinner-cont').css('display', 'inline-block');
-				return actions.payment.execute().then(function (data) {
-				jQuery.post('<?php echo get_admin_url(); ?>admin-ajax.php',
-					{'action': 'rapaygo_process_pp_smart_checkout', 'rapaygo_payment_data': data})
-					.done(function (result) {
-						if (result.success) {
-						window.location.href = '<?php echo esc_js( $return_url ); ?>';
-						} else {
-						console.log(result);
-						alert(result.errMsg)
-						jQuery("[class^='wp-cart-paypal-button-container']").show();
-						if (jQuery('.rapaygo_cart_checkout_button').data('rapaygo-hidden') !== "1") {
-							jQuery('.rapaygo_cart_checkout_button').show();
-						}
-						jQuery('.rapaygo_cart_checkout_button').show();
-						jQuery('.wpspsc-spinner-cont').hide();
-						}
-					})
-					.fail(function (result) {
-						console.log(result);
-						jQuery("[class^='wp-cart-paypal-button-container']").show();
-						if (jQuery('.rapaygo_cart_checkout_button').data('rapaygo-hidden') !== "1") {
-						jQuery('.rapaygo_cart_checkout_button').show();
-						}
-						jQuery('.wpspsc-spinner-cont').hide();
-						alert('<?php echo esc_js( __( 'HTTP error occured during payment process:', 'rapaygo-wp-plugin' ) ); ?>' + ' ' + result.status + ' ' + result.statusText);
-					});
-				});
-			}
-			}, '.wp-cart-paypal-button-container-<?php echo $carts_cnt; ?>');
-
-		</script>
-		<style>
-			@keyframes wpspsc-spinner {
-			to {transform: rotate(360deg);}
-			}
-
-			.wpspsc-spinner {
-			margin: 0 auto;
-			text-indent: -9999px;
-			vertical-align: middle;
-			box-sizing: border-box;
-			position: relative;
-			width: 60px;
-			height: 60px;
-			border-radius: 50%;
-			border: 5px solid #ccc;
-			border-top-color: #0070ba;
-			animation: wpspsc-spinner .6s linear infinite;
-			}
-			.wpspsc-spinner-cont {
-			width: 100%;
-			text-align: center;
-			margin-top:10px;
-			display: none;
-			}
-		</style>
-		<div class="wpspsc-spinner-cont">
-			<div class="wpspsc-spinner"></div>
-		</div>
-				<?php
-				$output .= ob_get_clean();
-			}
-		}
 		$output .= '</td></tr>';
+		?>
+		<script>
+			jQuery(document).ready(function ($) {
+				$('.rapaygo_cart_checkout_button_<?php echo $carts_cnt; ?>').click(function () {
+					$('.rapaygo_cart_checkout_button_<?php echo $carts_cnt; ?>').attr('disabled', 'disabled');
+					$('.rapaygo_cart_checkout_button_<?php echo $carts_cnt; ?>').attr('data-rapaygo-hidden', '1');
+					$('.rapaygo_cart_checkout_button_<?php echo $carts_cnt; ?>').attr('style', 'display:none !important');
+				});
+			});
+		</script>
+		<?php
 	}
 	$output .= '</table></div>';
 	$output  = apply_filters( 'rapaygo_after_cart_output', $output );

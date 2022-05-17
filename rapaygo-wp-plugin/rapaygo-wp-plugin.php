@@ -28,8 +28,8 @@ define( 'RAPAYGO_LANG_DIR', plugin_dir_path( __FILE__ ). "/languages" );
 
 define( 'RAPAYGO_CART_URL', plugins_url( '', __FILE__ ) );
 define( 'RAPAYGO_CART_SITE_URL', site_url() );
-define( 'RAPAYGO_CART_LIVE_PAYPAL_URL', 'https://www.paypal.com/cgi-bin/webscr' );
-define( 'RAPAYGO_CART_SANDBOX_PAYPAL_URL', 'https://www.sandbox.paypal.com/cgi-bin/webscr' );
+define( 'RAPAYGO_CART_SUBMIT_URL', 'https://api.rapygo.com/v1/wp-plugin/cart' );
+define( 'RAPAYGO_CART_DEV_SUBMIT_URL', 'https://devapi.rapygo.com/v1/wp-plugin/cart' );
 define( 'RAPAYGO_CART_CURRENCY_SYMBOL', get_option( 'cart_currency_symbol' ) );
 if ( ! defined( 'RAPAYGO_CART_MANAGEMENT_PERMISSION' ) ) {//This will allow the user to define custom capability for this constant in wp-config file
     define( 'RAPAYGO_CART_MANAGEMENT_PERMISSION', 'manage_options' );
@@ -47,7 +47,7 @@ include_once('rapaygo-wp-plugin_shortcodes.php');
 include_once('rapaygo-wp-plugin_misc_functions.php');
 include_once('rapaygo-wp-plugin_orders.php');
 include_once('class-coupon.php');
-include_once('includes/rapaygo-cart-functions.php');
+include_once('includes/rapaygo-cart-functions-r.php');
 include_once('includes/admin/rapaygo_menu_main.php');
 include_once('includes/admin/rapaygo_tinymce.php');
 
@@ -213,7 +213,7 @@ function rapaygo_cart_actions_handler() {
                 }
             }
 
-	    $price = str_replace( WP_CART_CURRENCY_SYMBOL, "", $price ); //Remove any currency symbol from the price.
+	    $price = str_replace( RAPAYGO_CART_CURRENCY_SYMBOL, "", $price ); //Remove any currency symbol from the price.
 	    //Check that the price field is numeric.
 	    if ( ! is_numeric( $price ) ) {//Price validation failed
 		wp_die( 'Error! The price validation failed. The value must be numeric.' );
@@ -239,7 +239,7 @@ function rapaygo_cart_actions_handler() {
                 }
             }
 
-	    $shipping = str_replace( WP_CART_CURRENCY_SYMBOL, "", $shipping ); //Remove any currency symbol from the price.
+	    $shipping = str_replace( RAPAYGO_CART_CURRENCY_SYMBOL, "", $shipping ); //Remove any currency symbol from the price.
 	    //Check that the shipping price field is numeric.
 	    if ( ! is_numeric( $shipping ) ) {//Shipping price validation failed
 		wp_die( 'Error! The shipping price validation failed. The value must be numeric.' );

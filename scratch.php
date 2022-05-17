@@ -1,137 +1,137 @@
 
 
 
+6Ds$wMK7#mZW@ARwDt
 
 
-///======
 
-// function rapaygo_add_menu() {
-//     add_submenu_page("options-general.php", "Rapaygo Plugin", "Rapaygo Plugin", "manage_options", "rapaygo-wp-cart", "rapaygo_landing_page");
-// }
+ function rapaygo_add_menu() {
+     add_submenu_page("options-general.php", "Rapaygo Plugin", "Rapaygo Plugin", "manage_options", "rapaygo-wp-cart", "rapaygo_landing_page");
+ }
 
-// add_action("admin_menu", "rapaygo_add_menu");
+ add_action("admin_menu", "rapaygo_add_menu");
 
 
-// function rapaygo_landing_page()
-// {
-//     ?>
-//     <div class="wrap">
-//         <h1>
-//             Bitcoin Lightning Network Commerce By <a
-//                 href="https://rapaygo.com" target="_blank">rapaygo</a>
-//         </h1>
-//         <p>
-//             Welcome. This is the settings page for the Rapaygo plugin. To use the 
-//             plugin you will need to <a href="https://rapaygo.com/signup">create a Rapaygo account</a>. Use your account to enable the plugin and start accepting Bitcoin payments on the 
-//             Lightning Network.
-//         </p>
+ function rapaygo_landing_page()
+ {
+     ?>
+     <div class="wrap">
+         <h1>
+             Bitcoin Lightning Network Commerce By <a
+                 href="https:rapaygo.com" target="_blank">rapaygo</a>
+         </h1>
+         <p>
+             Welcome. This is the settings page for the Rapaygo plugin. To use the 
+             plugin you will need to <a href="https:rapaygo.com/signup">create a Rapaygo account</a>. Use your account to enable the plugin and start accepting Bitcoin payments on the 
+             Lightning Network.
+         </p>
     
-//         <form method="post" action="options.php">
-//         <?php
-//         settings_fields("rapaygo_user_section");
-//         do_settings_sections("rapaygo-wp-cart");
-//         display_login_state();
-//         submit_button();
-//         ?>
-//         </form>
-//     </div>
+         <form method="post" action="options.php">
+         <?php
+         settings_fields("rapaygo_user_section");
+         do_settings_sections("rapaygo-wp-cart");
+         display_login_state();
+         submit_button();
+         ?>
+         </form>
+     </div>
     
-//     <?php
-// }
+     <?php
+ }
     
-// function rapaygo_wp_plugin_settings() {
-//     //section name, display name, callback to print description of section, page to which section is attached.
-//     add_settings_section("rapaygo_user_section", "User", null, "rapaygo-wp-cart");
+ function rapaygo_wp_plugin_settings() {
+     section name, display name, callback to print description of section, page to which section is attached.
+     add_settings_section("rapaygo_user_section", "User", null, "rapaygo-wp-cart");
 
 
-//     //setting name, display name, callback to print form element, page in which field is displayed, section to which it belongs.
-//     //last field section is optional.
-//     add_settings_field("username", "Username", "display_username_option", "rapaygo-wp-cart", "rapaygo_user_section");
-//     add_settings_field("password", "Password", "display_password_option", "rapaygo-wp-cart", "rapaygo_user_section");
+     setting name, display name, callback to print form element, page in which field is displayed, section to which it belongs.
+     last field section is optional.
+     add_settings_field("username", "Username", "display_username_option", "rapaygo-wp-cart", "rapaygo_user_section");
+     add_settings_field("password", "Password", "display_password_option", "rapaygo-wp-cart", "rapaygo_user_section");
 
-//     // add_settings_field("rapaygo-wp-cart-username", "Username", "rapaygo_wp_plugin_options", "rapaygo-wp-cart", "rapaygo_wp_plugin_config");
-//     //register_setting("rapaygo_wp_plugin_config", "rapaygo-wp-cart-username");
+      add_settings_field("rapaygo-wp-cart-username", "Username", "rapaygo_wp_plugin_options", "rapaygo-wp-cart", "rapaygo_wp_plugin_config");
+     register_setting("rapaygo_wp_plugin_config", "rapaygo-wp-cart-username");
     
-//     // add_settings_field("rapaygo-wp-cart-password", "Password", "rapaygo_wp_plugin_options", "rapaygo-wp-cart", "rapaygo_wp_plugin_config");
-//     // register_setting("rapaygo_wp_plugin_config", "rapaygo-wp-cart-password");
+      add_settings_field("rapaygo-wp-cart-password", "Password", "rapaygo_wp_plugin_options", "rapaygo-wp-cart", "rapaygo_wp_plugin_config");
+      register_setting("rapaygo_wp_plugin_config", "rapaygo-wp-cart-password");
 
-//     //section name, form element name, callback for sanitization
-//     register_setting("rapaygo_user_section", "username");
-//     register_setting("rapaygo_user_section", "password");
-// }
-// add_action("admin_init", "rapaygo_wp_plugin_settings");
+     section name, form element name, callback for sanitization
+     register_setting("rapaygo_user_section", "username");
+     register_setting("rapaygo_user_section", "password");
+ }
+ add_action("admin_init", "rapaygo_wp_plugin_settings");
     
-// function display_username_option() {
-//     ?>
-//     <div class="postbox" style="width: 65%; padding: 30px;">
-//         <input type="text" name="username"
-//             value="<?php
-//         echo stripslashes_deep(esc_attr(get_option('username'))); ?>" />
-//         Your rapaygo username<br />
-//     </div>
-//     <?php
-// }
+ function display_username_option() {
+     ?>
+     <div class="postbox" style="width: 65%; padding: 30px;">
+         <input type="text" name="username"
+             value="<?php
+         echo stripslashes_deep(esc_attr(get_option('username'))); ?>" />
+         Your rapaygo username<br />
+     </div>
+     <?php
+ }
 
-// function display_login_state() {
-//     $username = get_option('username');
-//     $password = get_option('password');
+ function display_login_state() {
+     $username = get_option('username');
+     $password = get_option('password');
 
-//     $curl = curl_init();
+     $curl = curl_init();
 
-//     curl_setopt_array($curl, array(
-//         CURLOPT_URL => 'http://172.17.0.1:5020/auth/access_token',
-//         CURLOPT_RETURNTRANSFER => true,
-//         CURLOPT_ENCODING => '',
-//         CURLOPT_MAXREDIRS => 10,
-//         CURLOPT_TIMEOUT => 0,
-//         CURLOPT_FOLLOWLOCATION => true,
-//         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-//         CURLOPT_CUSTOMREQUEST => 'POST',
-//         CURLOPT_POSTFIELDS =>'{
-//         "username": "claytantor@gmail.com",
-//         "pass_phrase": "nasty nice fold",
-//         "type": "wallet_owner"
-//     }',
-//         CURLOPT_HTTPHEADER => array(
-//         'Content-Type: application/json'
-//         ),
-//     ));
+     curl_setopt_array($curl, array(
+         CURLOPT_URL => 'http:172.17.0.1:5020/auth/access_token',
+         CURLOPT_RETURNTRANSFER => true,
+         CURLOPT_ENCODING => '',
+         CURLOPT_MAXREDIRS => 10,
+         CURLOPT_TIMEOUT => 0,
+         CURLOPT_FOLLOWLOCATION => true,
+         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+         CURLOPT_CUSTOMREQUEST => 'POST',
+         CURLOPT_POSTFIELDS =>'{
+         "username": "claytantor@gmail.com",
+         "pass_phrase": "nasty nice fold",
+         "type": "wallet_owner"
+     }',
+         CURLOPT_HTTPHEADER => array(
+         'Content-Type: application/json'
+         ),
+     ));
     
-//     $response = curl_exec($curl);
-//     echo '<pre>'.print_r( $response, true ).'</pre>';
+     $response = curl_exec($curl);
+     echo '<pre>'.print_r( $response, true ).'</pre>';
     
-//     curl_close($curl);
-//     echo $response;
+     curl_close($curl);
+     echo $response;
 
 
-//     ?>
-//     <div>
-//         <?php echo $response; ?>
-//         <?php if ($response) { ?>
-//             <div class="postbox" style="width: 65%; padding: 30px;">
-//                 <h2>
-//                     Login Status
-//                 </h2>
-//                 <p>
-//                     You are logged in as <?php echo $response; ?>
-//                 </p>
-//             </div>  
-//             <?php } ?>
-//     <?php
+     ?>
+     <div>
+         <?php echo $response; ?>
+         <?php if ($response) { ?>
+             <div class="postbox" style="width: 65%; padding: 30px;">
+                 <h2>
+                     Login Status
+                 </h2>
+                 <p>
+                     You are logged in as <?php echo $response; ?>
+                 </p>
+             </div>  
+             <?php } ?>
+     <?php
 
-// }
+ }
 
-// function display_password_option() {
-//     ?>
-//     <div class="postbox" style="width: 65%; padding: 30px;">
-//         <input type="password" name="password"
-//             value="<?php
-//         echo stripslashes_deep(esc_attr(get_option('password'))); ?>" />
-//         Your rapaygo password<br />
-//     </div>
+ function display_password_option() {
+     ?>
+     <div class="postbox" style="width: 65%; padding: 30px;">
+         <input type="password" name="password"
+             value="<?php
+         echo stripslashes_deep(esc_attr(get_option('password'))); ?>" />
+         Your rapaygo password<br />
+     </div>
 
-//     <?php
-// }
+     <?php
+ }
 
 
 
@@ -283,19 +283,20 @@
     ?>
 
     <div class="rapaygo_yellow_box">
-    <p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "rapaygo-wp-plugin"); ?><br />
-    <a href="https://www.tipsandtricks-hq.com/rapaygo-wp-plugin-plugin-768" target="_blank"><?php _e("Rapaygo Cart Plugin Homepage", "rapaygo-wp-plugin"); ?></a></p>
+        <p><?php _e("For more information, updates, detailed documentation and video tutorial, please visit:", "rapaygo-wp-plugin"); ?><br />
+        <a href="https://www.tipsandtricks-hq.com/rapaygo-wp-plugin-plugin-768" target="_blank"><?php _e("Rapaygo Cart Plugin Homepage", "rapaygo-wp-plugin"); ?></a></p>
     </div>
 
     <div class="postbox">
-    <h3 class="hndle"><label for="title"><?php _e("Quick Usage Guide", "rapaygo-wp-plugin"); ?></label></h3>
-    <div class="inside">
+        <h3 class="hndle"><label for="title"><?php _e("Quick Usage Guide", "rapaygo-wp-plugin"); ?></label></h3>
+        <div class="inside">
 
-        <p><strong><?php _e("Step 1) ","rapaygo-wp-plugin"); ?></strong><?php _e("To add an 'Add to Cart' button for a product simply add the shortcode", "rapaygo-wp-plugin"); ?> [rapaygo_cart_button name="<?php _e("PRODUCT-NAME", "rapaygo-wp-plugin"); ?>" price="<?php _e("PRODUCT-PRICE", "rapaygo-wp-plugin"); ?>"] <?php _e("to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price of your product.", "rapaygo-wp-plugin"); ?></p>
-        <p><?php _e("Example add to cart button shortcode usage:", "rapaygo-wp-plugin");?> <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[rapaygo_cart_button name="Test Product" price="29.95"]</p></p>
-	<p><strong><?php _e("Step 2) ","rapaygo-wp-plugin"); ?></strong><?php _e("To add the shopping cart to a post or page (example: a checkout page) simply add the shortcode", "rapaygo-wp-plugin"); ?> [show_rapaygo_shopping_cart] <?php _e("to a post or page or use the sidebar widget to add the shopping cart to the sidebar.", "rapaygo-wp-plugin"); ?></p>
-        <p><?php _e("Example shopping cart shortcode usage:", "rapaygo-wp-plugin");?> <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[show_rapaygo_shopping_cart]</p></p>
-    </div></div>
+            <p><strong><?php _e("Step 1) ","rapaygo-wp-plugin"); ?></strong><?php _e("To add an 'Add to Cart' button for a product simply add the shortcode", "rapaygo-wp-plugin"); ?> [rapaygo_cart_button name="<?php _e("PRODUCT-NAME", "rapaygo-wp-plugin"); ?>" price="<?php _e("PRODUCT-PRICE", "rapaygo-wp-plugin"); ?>"] <?php _e("to a post or page next to the product. Replace PRODUCT-NAME and PRODUCT-PRICE with the actual name and price of your product.", "rapaygo-wp-plugin"); ?></p>
+            <p><?php _e("Example add to cart button shortcode usage:", "rapaygo-wp-plugin");?> <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[rapaygo_cart_button name="Test Product" price="29.95"]</p></p>
+        <p><strong><?php _e("Step 2) ","rapaygo-wp-plugin"); ?></strong><?php _e("To add the shopping cart to a post or page (example: a checkout page) simply add the shortcode", "rapaygo-wp-plugin"); ?> [show_rapaygo_shopping_cart] <?php _e("to a post or page or use the sidebar widget to add the shopping cart to the sidebar.", "rapaygo-wp-plugin"); ?></p>
+            <p><?php _e("Example shopping cart shortcode usage:", "rapaygo-wp-plugin");?> <p style="background-color: #DDDDDD; padding: 5px; display: inline;">[show_rapaygo_shopping_cart]</p></p>
+        </div>
+    </div>
 
     <form method="post" action="">
     <?php wp_nonce_field('rapaygo_cart_settings_update'); ?>

@@ -112,7 +112,7 @@ function rapaygo_apply_cart_discount($coupon_code)
     }
 
     //Apply the discount
-    $curr_symbol = WP_CART_CURRENCY_SYMBOL;
+    $curr_symbol = RAPAYGO_CART_CURRENCY_SYMBOL;
     $discount_rate = $coupon_item->discount_rate;
     $products = $_SESSION['simpleCart'];
     $discount_total = 0;

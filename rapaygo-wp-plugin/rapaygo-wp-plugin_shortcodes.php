@@ -76,7 +76,7 @@ function rapaygo_cart_display_product_handler($atts)
         $thumbnail_code = '<a href="'.$thumb_target.'"><img src="'.$thumbnail.'" alt="'.$thumb_alt.'"></a>';
     }
     $thumbnail_code = apply_filters('rapaygo_product_box_thumbnail_code', $thumbnail_code, $atts);
-    $currency_symbol = WP_CART_CURRENCY_SYMBOL;
+    $currency_symbol = RAPAYGO_CART_CURRENCY_SYMBOL;
     $formatted_price = print_payment_currency($price, $currency_symbol);
     $button_code = print_rapaygo_cart_button_for_product($name, $price, $shipping, $var1, $var2, $var3, $atts);
 
@@ -107,7 +107,7 @@ EOT;
 function rapaygo_compact_cart_handler($args)
 {
     $num_items = rapaygo_get_total_cart_qty();
-    $curSymbol = WP_CART_CURRENCY_SYMBOL;
+    $curSymbol = RAPAYGO_CART_CURRENCY_SYMBOL;
     $checkout_url = get_option('cart_checkout_page_url');
 
     $output = "";
@@ -136,7 +136,7 @@ function rapaygo_compact_cart2_handler($args)
 {
     $num_items = rapaygo_get_total_cart_qty();
     $checkout_url = get_option('cart_checkout_page_url');
-    //$curSymbol = WP_CART_CURRENCY_SYMBOL;
+    //$curSymbol = RAPAYGO_CART_CURRENCY_SYMBOL;
     //$cart_total = rapaygo_get_total_cart_sub_total();
 
     $output = "";
