@@ -1,0 +1,14 @@
+{
+
+    "require": {
+        "guzzlehttp/guzzle": "7.4.2"
+    },
+    "require-dev": {
+        "wp-cli/wp-cli": "*",
+        "fabpot/php-cs-fixer": "@stable"
+    },
+    "minimum-stability": "stable",
+    "config": {
+        "bin-dir": "bin/"
+    }
+}
