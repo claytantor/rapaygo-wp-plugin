@@ -648,18 +648,21 @@ function woocommerce_rapaygo_init()
             $this->log('    [Info] Leaving thankyou_page with order_id =  ' . $order_id);
         }
 
-        public function get_rapaygo_redirect($order_id, $client)
+        public function get_rapaygo_redirect($order_id, $client, $url)
         {
+            $this->log('    [Info] Entered get_rapaygo_redirect with order_id =  ' . $order_id);
+
             $redirect = get_post_meta($order_id, 'Rapaygo_redirect', true);
             if($redirect)
             {
-                $invoice_id = get_post_meta($order_id, 'Rapaygo_id', true);;
-                $invoice = $client->getInvoice($invoice_id);
-                $status = $invoice->getStatus();
-                if($status === 'invalid' || $status === 'expired')
-                {
-                    $redirect = null;
-                }
+                $invoice_id = get_post_meta($order_id, 'Rapaygo_id', true);
+                $this->log('    [Info] Redirecting to ' . $redirect . ' with invoice_id = ' . $invoice_id);
+                // $invoice = $client->getInvoice($invoice_id);
+                // $status = $invoice->getStatus();
+                // if($status === 'invalid' || $status === 'expired')
+                // {
+                //     $redirect = null;
+                // }
             }
             return $redirect;
         }
@@ -701,7 +704,7 @@ function woocommerce_rapaygo_init()
             $this->log('    [Info] Changed order status result');
             $thanks_link = $this->get_return_url($order);
 
-            $this->log('    [Info] The variable thanks_link = ' . $thanks_link . '...');
+            $this->log('    A [Info] The variable thanks_link = ' . $thanks_link . '...');
 
             // Redirect URL & Notification URL
             $redirect_url = $this->get_option('redirect_url', $thanks_link);
@@ -728,7 +731,7 @@ function woocommerce_rapaygo_init()
             // Setup the currency
             $currency_code = get_woocommerce_currency();
 
-            $this->log('    [Info] The variable currency_code = ' . $currency_code . '...');
+            $this->log('   A [Info] The variable currency_code = ' . $currency_code . '...');
 
             // $currency = new \Bitpay\Currency($currency_code);
 
@@ -744,8 +747,10 @@ function woocommerce_rapaygo_init()
             //     $this->log('    [Error] The Rapaygo payment plugin was called to process a payment but could not instantiate a client object.');
             //     throw new \Exception('The Rapaygo payment plugin was called to process a payment but could not instantiate a client object. Cannot continue!');
             // }
+
+            
+
             $url = $this->api_url;
-            $client->setUri($url);
             $this->log('    [Info] Set url to ' . $this->api_url);
 
 
@@ -780,7 +785,10 @@ function woocommerce_rapaygo_init()
             // }
 
 			// we need a rapaygo client here
-            $redirect = $this->get_rapaygo_redirect($order_id, $client);
+            // $client->setUri($url);
+            // $client = new GuzzleHttp\Client();
+            $client = new WP_Http();
+            $redirect = $this->get_rapaygo_redirect($order_id, $client, $url);
 
             if($redirect)
             {
@@ -792,160 +800,160 @@ function woocommerce_rapaygo_init()
                 );
             }
 
-            $this->log('    [Info] Key and token empty checks passed.  Parameters in client set accordingly...');
+            // $this->log('    [Info] Key and token empty checks passed.  Parameters in client set accordingly...');
 
-            // Setup the Invoice
-            $invoice = new \Bitpay\Invoice();
+            // // Setup the Invoice
+            // $invoice = new \Bitpay\Invoice();
 
-            if (false === isset($invoice) || true === empty($invoice)) {
-                $this->log('    [Error] The Rapaygo payment plugin was called to process a payment but could not instantiate an Invoice object.');
-                throw new \Exception('The Rapaygo payment plugin was called to process a payment but could not instantiate an Invoice object. Cannot continue!');
-            } else {
-                $this->log('    [Info] Invoice object created successfully...');
-            }
+            // if (false === isset($invoice) || true === empty($invoice)) {
+            //     $this->log('    [Error] The Rapaygo payment plugin was called to process a payment but could not instantiate an Invoice object.');
+            //     throw new \Exception('The Rapaygo payment plugin was called to process a payment but could not instantiate an Invoice object. Cannot continue!');
+            // } else {
+            //     $this->log('    [Info] Invoice object created successfully...');
+            // }
 
-            $order_url = $order->get_edit_order_url();
+            // $order_url = $order->get_edit_order_url();
 
-            $pos_data = array(
-                'WooCommerce' => array(
-                    'Order ID' => $order_id,
-                    'Order Number' => $order_number,
-                    'Order URL' => $order_url,
-                    'Plugin Version' => constant("RAPAYGO_VERSION")
-                )
-            );
+            // $pos_data = array(
+            //     'WooCommerce' => array(
+            //         'Order ID' => $order_id,
+            //         'Order Number' => $order_number,
+            //         'Order URL' => $order_url,
+            //         'Plugin Version' => constant("RAPAYGO_VERSION")
+            //     )
+            // );
 
-            // Use the order number as Rapaygo order id, because the ID shows up as a reference in the invoices list
-            $invoice->setOrderId((string)$order_number);
-            $invoice->setPosData(json_encode($pos_data));
-            $invoice->setCurrency($currency);
-            $invoice->setFullNotifications(true);
-            $invoice->setExtendedNotifications(true);
+            // // Use the order number as Rapaygo order id, because the ID shows up as a reference in the invoices list
+            // $invoice->setOrderId((string)$order_number);
+            // $invoice->setPosData(json_encode($pos_data));
+            // $invoice->setCurrency($currency);
+            // $invoice->setFullNotifications(true);
+            // $invoice->setExtendedNotifications(true);
 
-            // Handle additional tokens and enforce them for invoice payment.
-            if (!empty($this->token_symbol)) {
-                $invoice->setPaymentCurrencies(array($this->token_symbol));
-            }
+            // // Handle additional tokens and enforce them for invoice payment.
+            // if (!empty($this->token_symbol)) {
+            //     $invoice->setPaymentCurrencies(array($this->token_symbol));
+            // }
 
-			// For the default Rapaygo payment method we enforce payment tokens (if enabled).
-			if ($this->id === 'rapaygo') {
-				$limit_payment_methods = $this->get_option('additional_tokens_limit_payment');
-				$payment_tokens = rapaygo_get_additional_tokens('payment');
-				if ($payment_tokens && $limit_payment_methods === 'yes') {
-					$invoice->setPaymentCurrencies(array_column($payment_tokens, 'symbol'));
-				}
-			}
+			// // For the default Rapaygo payment method we enforce payment tokens (if enabled).
+			// if ($this->id === 'rapaygo') {
+			// 	$limit_payment_methods = $this->get_option('additional_tokens_limit_payment');
+			// 	$payment_tokens = rapaygo_get_additional_tokens('payment');
+			// 	if ($payment_tokens && $limit_payment_methods === 'yes') {
+			// 		$invoice->setPaymentCurrencies(array_column($payment_tokens, 'symbol'));
+			// 	}
+			// }
 
-            // Add a priced item to the invoice
-            $item = new \Bitpay\Item();
+            // // Add a priced item to the invoice
+            // $item = new \Bitpay\Item();
 
-            if (false === isset($item) || true === empty($item)) {
-                $this->log('    [Error] The Rapaygo payment plugin was called to process a payment but could not instantiate an item object.');
-                throw new \Exception('The Rapaygo payment plugin was called to process a payment but could not instantiate an item object. Cannot continue!');
-            } else {
-                $this->log('    [Info] Item object created successfully...');
-            }
+            // if (false === isset($item) || true === empty($item)) {
+            //     $this->log('    [Error] The Rapaygo payment plugin was called to process a payment but could not instantiate an item object.');
+            //     throw new \Exception('The Rapaygo payment plugin was called to process a payment but could not instantiate an item object. Cannot continue!');
+            // } else {
+            //     $this->log('    [Info] Item object created successfully...');
+            // }
 
-            $order_total = $order->calculate_totals();
-            if (!empty($order_total)) {
-                $order_total = (float)$order_total;
-                if (!is_float($order_total)) {
-                  throw new \Bitpay\Client\ArgumentException("Price must be formatted as a float ". $order_total);
-                }
+            // $order_total = $order->calculate_totals();
+            // if (!empty($order_total)) {
+            //     $order_total = (float)$order_total;
+            //     if (!is_float($order_total)) {
+            //       throw new \Bitpay\Client\ArgumentException("Price must be formatted as a float ". $order_total);
+            //     }
 
-                // For promotion tokens we need to set the price to 1 (per item quantity).
-                // The idea is that 1 token is like a voucher.
-                if (!empty($this->token_symbol) && $this->token_mode === 'promotion') {
-                    // Set the invoice currency to the promotion token.
-                    $invoice->setCurrency(new \Bitpay\CurrencyUnrestricted($this->token_symbol));
-                    // For each of the purchased items quantity we charge 1 token.
-                    $total_quantity = (float) $this->get_order_total_item_quantity($order);
-                    $item->setPrice($total_quantity);
-                } else {
-                    $item->setPrice($order_total);
-                }
+            //     // For promotion tokens we need to set the price to 1 (per item quantity).
+            //     // The idea is that 1 token is like a voucher.
+            //     if (!empty($this->token_symbol) && $this->token_mode === 'promotion') {
+            //         // Set the invoice currency to the promotion token.
+            //         $invoice->setCurrency(new \Bitpay\CurrencyUnrestricted($this->token_symbol));
+            //         // For each of the purchased items quantity we charge 1 token.
+            //         $total_quantity = (float) $this->get_order_total_item_quantity($order);
+            //         $item->setPrice($total_quantity);
+            //     } else {
+            //         $item->setPrice($order_total);
+            //     }
 
-                $taxIncluded = $order->get_cart_tax();
-                $item->setTaxIncluded($taxIncluded);
-            } else {
-                $this->log('    [Error] The Rapaygo payment plugin was called to process a payment but could not set item->setPrice to $order->calculate_totals(). The empty() check failed!');
-                throw new \Exception('The Rapaygo payment plugin was called to process a payment but could not set item->setPrice to $order->calculate_totals(). The empty() check failed!');
-            }
-            // Add buyer's email & country code to the invoice
-            $buyer = new \Bitpay\Buyer();
-            $buyer->setEmail($order->get_billing_email());
-            $buyer->setCountry($order->get_shipping_country());
+            //     $taxIncluded = $order->get_cart_tax();
+            //     $item->setTaxIncluded($taxIncluded);
+            // } else {
+            //     $this->log('    [Error] The Rapaygo payment plugin was called to process a payment but could not set item->setPrice to $order->calculate_totals(). The empty() check failed!');
+            //     throw new \Exception('The Rapaygo payment plugin was called to process a payment but could not set item->setPrice to $order->calculate_totals(). The empty() check failed!');
+            // }
+            // // Add buyer's email & country code to the invoice
+            // $buyer = new \Bitpay\Buyer();
+            // $buyer->setEmail($order->get_billing_email());
+            // $buyer->setCountry($order->get_shipping_country());
 
-            $invoice->setBuyer($buyer);
-            $invoice->setItem($item);
+            // $invoice->setBuyer($buyer);
+            // $invoice->setItem($item);
 
-            // Add the Redirect and Notification URLs
-            $invoice->setRedirectUrl($redirect_url);
-            $invoice->setNotificationUrl($notification_url);
-            $invoice->setTransactionSpeed($this->transaction_speed);
+            // // Add the Redirect and Notification URLs
+            // $invoice->setRedirectUrl($redirect_url);
+            // $invoice->setNotificationUrl($notification_url);
+            // $invoice->setTransactionSpeed($this->transaction_speed);
 
-            try {
-                $this->log('    [Info] Attempting to generate invoice for ' . $order_id . ' (Order number ' . $order_number . ') ...');
+            // try {
+            //     $this->log('    [Info] Attempting to generate invoice for ' . $order_id . ' (Order number ' . $order_number . ') ...');
 
-                $invoice = $client->createInvoice($invoice);
+            //     $invoice = $client->createInvoice($invoice);
 
-                if (false === isset($invoice) || true === empty($invoice)) {
-                    $this->log('    [Error] The Rapaygo payment plugin was called to process a payment but could not instantiate an invoice object.');
-                    throw new \Exception('The Rapaygo payment plugin was called to process a payment but could not instantiate an invoice object. Cannot continue!');
-                } else {
-                    $this->log('    [Info] Call to generate invoice was successful: ' . $client->getResponse()->getBody());
-                }
-            } catch (\Exception $e) {
-                $this->log('    [Error] Error generating invoice for ' . $order_id . ' (Order number ' . $order_number . '), "' . $e->getMessage() . '"');
-                error_log($e->getMessage());
+            //     if (false === isset($invoice) || true === empty($invoice)) {
+            //         $this->log('    [Error] The Rapaygo payment plugin was called to process a payment but could not instantiate an invoice object.');
+            //         throw new \Exception('The Rapaygo payment plugin was called to process a payment but could not instantiate an invoice object. Cannot continue!');
+            //     } else {
+            //         $this->log('    [Info] Call to generate invoice was successful: ' . $client->getResponse()->getBody());
+            //     }
+            // } catch (\Exception $e) {
+            //     $this->log('    [Error] Error generating invoice for ' . $order_id . ' (Order number ' . $order_number . '), "' . $e->getMessage() . '"');
+            //     error_log($e->getMessage());
 
-                return array(
-                    'result'    => 'success',
-                    'messages'  => 'Sorry, but Bitcoin checkout with Rapaygo does not appear to be working.'
-                );
-            }
+            //     return array(
+            //         'result'    => 'success',
+            //         'messages'  => 'Sorry, but Bitcoin checkout with Rapaygo does not appear to be working.'
+            //     );
+            // }
 
-            $responseData = json_decode($client->getResponse()->getBody());
+            // $responseData = json_decode($client->getResponse()->getBody());
 
-            // If another Rapaygo invoice was created before, returns the original one
-            $redirect = $this->get_rapaygo_redirect($order_id, $client);
-            if($redirect)
-            {
-                $this->log('    [Info] Existing Rapaygo invoice has already been created, redirecting to it...');
-                $this->log('    [Info] Leaving process_payment()...');
-                return array(
-                    'result'   => 'success',
-                    'redirect' => $redirect,
-                );
-            }
+            // // If another Rapaygo invoice was created before, returns the original one
+            // $redirect = $this->get_rapaygo_redirect($order_id, $client);
+            // if($redirect)
+            // {
+            //     $this->log('    [Info] Existing Rapaygo invoice has already been created, redirecting to it...');
+            //     $this->log('    [Info] Leaving process_payment()...');
+            //     return array(
+            //         'result'   => 'success',
+            //         'redirect' => $redirect,
+            //     );
+            // }
 
-            // Store Rapaygo meta data
-            update_post_meta($order_id, 'Rapaygo_redirect', $invoice->getUrl());
-            update_post_meta($order_id, 'Rapaygo_id', $invoice->getId());
-            update_post_meta($order_id, 'Rapaygo_rate', $invoice->getRate());
-            $formattedRate = number_format($invoice->getRate(), wc_get_price_decimals(), wc_get_price_decimal_separator(), wc_get_price_thousand_separator());
-            update_post_meta($order_id, 'Rapaygo_formatted_rate', $formattedRate);
+            // // Store Rapaygo meta data
+            // update_post_meta($order_id, 'Rapaygo_redirect', $invoice->getUrl());
+            // update_post_meta($order_id, 'Rapaygo_id', $invoice->getId());
+            // update_post_meta($order_id, 'Rapaygo_rate', $invoice->getRate());
+            // $formattedRate = number_format($invoice->getRate(), wc_get_price_decimals(), wc_get_price_decimal_separator(), wc_get_price_thousand_separator());
+            // update_post_meta($order_id, 'Rapaygo_formatted_rate', $formattedRate);
 
-            $this->update_rapaygo($order_id, $responseData);
+            // $this->update_rapaygo($order_id, $responseData);
 
-            // Reduce stock levels
-            if (function_exists('wc_reduce_stock_levels'))
-            {
-                wc_reduce_stock_levels($order_id);
-            }
-            else
-            {
-                $order->reduce_order_stock();
-            }
+            // // Reduce stock levels
+            // if (function_exists('wc_reduce_stock_levels'))
+            // {
+            //     wc_reduce_stock_levels($order_id);
+            // }
+            // else
+            // {
+            //     $order->reduce_order_stock();
+            // }
 
-            $this->log('    [Info] Rapaygo invoice assigned ' . $invoice->getId());
-            $this->log('    [Info] Leaving process_payment()...');
+            // $this->log('    [Info] Rapaygo invoice assigned ' . $invoice->getId());
+            // $this->log('    [Info] Leaving process_payment()...');
 
-            // Redirect the customer to the BitPay invoice
-            return array(
-                'result'   => 'success',
-                'redirect' => $invoice->getUrl(),
-            );
+            // // Redirect the customer to the BitPay invoice
+            // return array(
+            //     'result'   => 'success',
+            //     'redirect' => $invoice->getUrl(),
+            // );
         }
 
         public function ipn_callback()

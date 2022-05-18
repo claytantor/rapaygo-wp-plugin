@@ -3,7 +3,7 @@
 
 6Ds$wMK7#mZW@ARwDt
 ^2C@EToS8!*DM0^3su
-
+ynM3nDLl)ZNwVJGDWN
 
  function rapaygo_add_menu() {
      add_submenu_page("options-general.php", "Rapaygo Plugin", "Rapaygo Plugin", "manage_options", "rapaygo-wp-cart", "rapaygo_landing_page");
