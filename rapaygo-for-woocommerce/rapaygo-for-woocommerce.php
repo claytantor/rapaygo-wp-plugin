@@ -201,11 +201,58 @@ function woocommerce_rapaygo_init()
                 add_action('woocommerce_api_wc_gateway_rapaygo', array($this, 'ipn_callback'));
             }
 
+            // enque custom scripts
+            add_action('wp_enqueue_scripts', array($this, 'rapaygo_payment_gateway_scripts'));
+
             // Additional token initialization.
             // if (rapaygo_get_additional_tokens()) {
             //   $this->initialize_additional_tokens();
             // }
             $this->is_initialized = true;
+        }
+
+        public function rapaygo_payment_gateway_scripts() {
+
+            // process a token only on cart/checkout pages
+            if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) ) {
+                return;
+            }
+        
+            // stop enqueue JS if payment gateway is disabled
+            if ( 'no' === $this->enabled ) {
+                return;
+            }
+        
+            // stop enqueue JS if API keys are not set
+            if ( empty( $this->api_secret ) || empty( $this->api_key ) ) {
+                return;
+            }
+        
+            // stop enqueue JS if test mode is enabled
+            if ( ! $this->test_mode ) {
+                return;
+            }
+        
+            // stop enqueue JS if site without SSL
+            if ( ! is_ssl() ) {
+                return;
+            }
+        
+            // payment processor JS that allows to get a token
+            // replace this with your own JS file when you get it distributed
+            // wp_enqueue_script( 'ybc_js', 'https://www.example.com/api/get-token.js' );
+        
+            // custom JS that works with get-token.js
+            wp_register_script( 'woocommerce_pay_rapaygo', plugins_url( 'assets/js/token-script.js', __FILE__ ), array( 'jquery', 'rapaygo_js' ) );
+        
+            // use api key and secret to get access token
+            wp_localize_script( 'woocommerce_pay_rapaygo', 'rapaygo_params', array(
+                'apiKey' => $this->api_key,
+                'apiSecret' => $this->api_secret,
+            ) );
+        
+            wp_enqueue_script( 'woocommerce_pay_rapaygo' );
+        
         }
 
 		/**
