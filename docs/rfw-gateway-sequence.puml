@@ -1,4 +1,19 @@
 @startuml
+User -> WooCommerce: Checkout
+User -> WooCommerce: Enter Shipping Info
+User -> WooCommerce: Select Payment Type
+WooCommerce -> RapaygoPaymentGateway_PHP: Activate Payment type
+User -> WooCommerce: Proceed to rapaygo
+WooCommerce -> RapaygoPaymentGateway_PHP: process_payment\nvia ?wc-ajax=checkout
+RapaygoPaymentGateway_PHP -> RapaygoAPIv1: POST /auth/access_token
+RapaygoPaymentGateway_PHP -> RapaygoPaymentGateway_PHP: setup creds for order 
+RapaygoPaymentGateway_PHP -> RapaygoAPIv1: POST /invoice/fiat
+RapaygoAPIv1 -> RapaygoAPIv1 : creates invoice and sets to "pending"
+RapaygoAPIv1 -> RapaygoPaymentGateway_PHP : return payment hash
+RapaygoPaymentGateway_PHP -> RapaygoWebApp : redirect user to payment page
+User -> RapaygoWebApp: Pays invoice with wallet
+RapaygoWebApp -> RapaygoPaymentGateway_PHP: use callback function\nhttp://rapaygo.com/?wc-api=CALLBACK
+RapaygoPaymentGateway_PHP -> RapaygoPaymentGateway_PHP: update cart
+RapaygoPaymentGateway_PHP -> User : redirect to thank you page
 
-[A]->[B]: a
 @enduml
