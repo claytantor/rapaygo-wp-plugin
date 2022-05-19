@@ -92,8 +92,8 @@ function woocommerce_rapaygo_init()
 			$this->api_secret            = $this->get_option('api_secret');
 
             $this->api_url               = 'http://172.17.0.1:5020';
-
             $this->rapaygo_app_url       = 'http://localhost:3000';
+            $this->success_redirect      = $this->get_option('success_redirect');
             
 
             // Define debugging & informational settings
@@ -255,7 +255,13 @@ function woocommerce_rapaygo_init()
                       'default'     => '',
                       'desc_tip'    => true,
                 ),
-
+                'success_redirect' => array(
+                    'title'       => __('Success Redirect Page', 'rapaygo-for-woocommerce'),
+                    'type'        => 'text',
+                    'description' => __('The page you want successful payments to be direct to from rapaygo.com', 'rapaygo-for-woocommerce'),
+                    'default'     => '',
+                    'desc_tip'    => true,
+               ),
                'debug' => array(
                     'title'       => __('Debug Log', 'rapaygo-for-woocommerce'),
                     'type'        => 'checkbox',
@@ -447,52 +453,56 @@ function woocommerce_rapaygo_init()
              return $url;
         }
 
-        /**
-         * Validate Redirect URL
-         */
-        public function validate_redirect_url_field()
-        {
-            $redirect_url = $this->get_option('redirect_url', '');
+        // /**
+        //  * Validate Redirect URL
+        //  */
+        // public function validate_redirect_url_field()
+        // {
+        //     $redirect_url = $this->get_option('redirect_url', '');
 
-            if ( isset( $_POST['woocommerce_rapaygo_redirect_url'] ) ) {
-                 if (filter_var($_POST['woocommerce_rapaygo_redirect_url'], FILTER_VALIDATE_URL) !== false) {
-                     $redirect_url = $_POST['woocommerce_rapaygo_redirect_url'];
-                 } else {
-                     $redirect_url = '';
-                 }
-             }
-             return $redirect_url;
-        }
+        //     if ( isset( $_POST['woocommerce_rapaygo_redirect_url'] ) ) {
+        //          if (filter_var($_POST['woocommerce_rapaygo_redirect_url'], FILTER_VALIDATE_URL) !== false) {
+        //              $redirect_url = $_POST['woocommerce_rapaygo_redirect_url'];
+        //          } else {
+        //              $redirect_url = '';
+        //          }
+        //      }
+        //      return $redirect_url;
+        // }
 
         /**
          * Output for the order received page.
          */
-        public function thankyou_page($order_id)
-        {
-            $this->log('    [Info] Entered thankyou_page with order_id =  ' . $order_id);
+        // public function thankyou_page($order_id)
+        // {
+        //     $this->log('    [Info] Entered thankyou_page with order_id =  ' . $order_id);
 
-            // Remove cart
-            WC()->cart->empty_cart();
+        //     // Remove cart
+        //     WC()->cart->empty_cart();
 
-            // Intentionally blank.
+        //     // Intentionally blank.
 
-            $this->log('    [Info] Leaving thankyou_page with order_id =  ' . $order_id);
-        }
+        //     $this->log('    [Info] Leaving thankyou_page with order_id =  ' . $order_id);
+        // }
 
         public function get_rapaygo_redirect($order_id, $order, $payment_hash)
         {
             $this->log('    [Info] Entered get_rapaygo_redirect with order_id =  ' . $order_id);
 
-            if('' == get_option('permalink_structure')){
-                $callback = site_url().'/?wc-api=WC_Gateway_Rapaygo';
-            } else {
-                $callback = site_url().'/wc-api/WC_Gateway_Rapaygo/';
-            }
+            // if('' == get_option('permalink_structure')){
+            //     $callback = site_url().'/?wc-api=WC_Gateway_Rapaygo';
+            // } else {
+            //     $callback = site_url().'/wc-api/WC_Gateway_Rapaygo/';
+            // }
 
-            $raypago_success_redirect_encoded = urlencode_deep(  $callback );
+            // $raypago_success_redirect_encoded = urlencode_deep(  $callback );
+
+            // hard coded to thank you page
+            $site_success = site_url().$this->success_redirect;
+            $raypago_success_redirect_encoded = urlencode_deep(  $site_success );
 
             //create the redirect to rapaygo
-            $redirect = $this->rapaygo_app_url . '/invoice_payment/pay/' . $payment_hash . '?success=' . $raypago_success_redirect_encoded . '?order_id=' . $order_id;
+            $redirect = $this->rapaygo_app_url . '/invoice_payment/pay/' . $payment_hash . '?success=' . $raypago_success_redirect_encoded . '&order_id=' . $order_id;
 
 
             return $redirect;
@@ -569,10 +579,6 @@ function woocommerce_rapaygo_init()
             $auth_body = array();
             if( !is_wp_error( $auth_response ) ) {
                 $auth_body = json_decode( $auth_response['body'], true );
-
-                // $this->log('[Info] Successful gateway token BEFORE' );
-                // $this->log('[Info] Successful gateway token = ' . $auth_body['access_token'] );
-
             } else {
                 $this->log('[Error] cannot process_payment() with order_id = ' . $order_id  . ' at url' .$payment_process_url);
                 wc_add_notice(  'There was an error when attempting to process payment gateway credentials.', 'error' );
@@ -594,10 +600,21 @@ function woocommerce_rapaygo_init()
             }    
 
             // order basics
+            $raypago_webhook = site_url().'/?wc-api=WC_Gateway_Rapaygo';
+            if('' == get_option('permalink_structure')){
+                $raypago_webhook = site_url().'/?wc-api=WC_Gateway_Rapaygo';
+            } else {
+                $raypago_webhook = site_url().'/wc-api/WC_Gateway_Rapaygo/';
+            }
+
+            // $raypago_webhook_encoded = urlencode_deep(  $callback );
+
             $invoice_request = array(
                 'amount_fiat'       => $order_price,
                 'currency'          => get_woocommerce_currency(),
-                'memo'              => 'online order id:'. $order_id . ' order number:' . $order->get_order_number()
+                'memo'              => 'online order id:'. $order_id . ' order number:' . $order->get_order_number(),
+                'webhook'           => $raypago_webhook,
+                'webhook_external_id' => $order_id
             );
 
             $invoice_response = wp_remote_post($payment_process_url, array(
@@ -850,20 +867,80 @@ function rapaygo_callback_handler()
 {
     // $this->log('[Info] CALLBACK Entered rapaygo_callback_handler()...');
 
-    $order_id = isset($_GET['order_id']) ? $_GET['order_id'] : null;
-    $payment_hash = isset($_GET['payment_hash']) ? $_GET['payment_hash'] : null;
+    $logger = new WC_Logger();
+    $logger->add('rapaygo', $message);
 
-    // if the backend to make sure they paid the update
+    $logger->add('rapaygo', 'successfully got callback: A');
+
+    // if(!empty($_POST))
+    // {
+    //     // when using application/x-www-form-urlencoded or multipart/form-data as the HTTP Content-Type in the request
+    //     // NOTE: if this is the case and $_POST is empty, check the variables_order in php.ini! - it must contain the letter P
+    //     return $_POST;
+    // }
+
+    // $logger->add('rapaygo', 'successfully got callback: B');
+    // $logger->add('rapaygo', 'successfully got callback: B2 ' . var_export($_POST, true));
+
+    // when using application/json as the HTTP Content-Type in the request 
+    $raw_post = file_get_contents('php://input');
+    $logger->add('rapaygo', 'successfully got callback: RAW '. $raw_post);
+    $post = json_decode($raw_post, true);
+    // if(json_last_error() == JSON_ERROR_NONE)
+    // {
+    //     return $post;
+    // }
+
+    $logger->add('rapaygo', 'successfully got callback: C');
+
+    // {
+    //     "id": 19,
+    //     "checking_id": "5194bce8099af5af5f303e779f457584d7d01bb72198f13363f8fb00c1e0c164",
+    //     "pending": false,
+    //     "msat_amount": 830000,
+    //     "amount": 830,
+    //     "msat_fee": 0,
+    //     "fee": 0,
+    //     "msat_tx_fee": 8300,
+    //     "tx_fee": 8,
+    //     "msat_ln_fee": 0,
+    //     "ln_fee": 0,
+    //     "memo": "2a834 POS payment. online order id:60 order number:60",
+    //     "status": "COMPLETED",
+    //     "created_at": "2022-05-19 10:58:20.130105",
+    //     "created_at_ts": 1652983100.130105,
+    //     "updated_at": "2022-05-19 17:58:30.279859",
+    //     "preimage": "",
+    //     "payment_hash": "5194bce8099af5af5f303e779f457584d7d01bb72198f13363f8fb00c1e0c164",
+    //     "payment_request": "lnbc8300n1p3gdpfupp52x2te6qfnt667hes8eme73t4sntaqxahyxv0zvmrlrasps0qc9jqhp5wyghpezt9ztnacz2z8u5eg28ev39k8nyd0gkq2pxgrmucgmevmgqcqzpgxqyz5vqsp58avv4zyscd8ed59mmrlypvjeueww9rzemffum9lamea7rk4t36qs9qyyssqxh00288a5c3ygk09993zlvlu8dtqhr2ppss227m2g6gj9trtlg24vwv5lmqwhzs9kp07ynflf3mky4uqhf44xvt6wvxx37htggkdjacqsemp8a",
+    //     "extra": "",
+    //     "wallet_id": 1,
+    //     "webhook": "http://localhost:8000/?wc-api=WC_Gateway_Rapaygo",
+    //     "webhook_status": "pending",
+    //     "withdraw_voucher_id": null,
+    //     "lnurl_payment_id": null
+    // }
+    
+    $logger->add('rapaygo', 'successfully got callback: ' . var_export($post, true));
+
+    $order_id = isset($post['webhook_external_id']) ? $post['webhook_external_id'] : null;
+    $payment_hash = isset($post['payment_hash']) ? $post['payment_hash'] : null;
+
+    // // if the backend to make sure they paid the update
     $order = wc_get_order( $order_id );
-    // $this->log('[Info] Entered rapaygo_callback_handler()...' . $order_id . ' payment hash:' . $payment_hash);
+    $logger->add('rapaygo', '[Info] Entered rapaygo_callback_handler()...' . $order_id . ' payment hash:' . $payment_hash);
 
-    // we received the payment
-    $order->payment_complete();
-    $order->reduce_order_stock();
-
-    // notes to customer
-    $order->add_order_note( 'Awesome, your order is paid! Thank you!', true );
-    $order->add_order_note( 'This private note shows only on order edit page', false );
+    // // we received the payment
+    if($order){
+        $order->payment_complete();
+        $order->reduce_order_stock();
+        $order->add_order_note( '[Info] Entered rapaygo_callback_handler...' . $order_id . ' payment hash:' . $payment_hash, false );
+    
+        // // notes to customer
+        $order->add_order_note( '[Info] Awesome, your order is paid! Thank you!', true );   
+    } else {
+        $logger->add('rapaygo', '[Info] order could not be found...' . $order_id . ' payment hash:' . $payment_hash);
+    }
 
     exit;
 

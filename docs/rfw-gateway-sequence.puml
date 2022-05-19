@@ -8,12 +8,23 @@ WooCommerce -> RapaygoPaymentGateway_PHP: process_payment\nvia ?wc-ajax=checkout
 RapaygoPaymentGateway_PHP -> RapaygoAPIv1: POST /auth/access_token
 RapaygoPaymentGateway_PHP -> RapaygoPaymentGateway_PHP: setup creds for order 
 RapaygoPaymentGateway_PHP -> RapaygoAPIv1: POST /invoice/fiat
-RapaygoAPIv1 -> RapaygoAPIv1 : creates invoice and sets to "pending"
+note right
+includes payment webhook callback
+nhttp://rapaygo.com/?wc-api=CALLBACK
+and success redirect
+end note
+
+RapaygoAPIv1 -> RapaygoRestWallet : creates invoice and sets to "pending"
+RapaygoRestWallet -> RapaygoAPIv1: return payment request
+RapaygoAPIv1 -> RapaygoAPIv1: save invoice with payment callback
 RapaygoAPIv1 -> RapaygoPaymentGateway_PHP : return payment hash
-RapaygoPaymentGateway_PHP -> RapaygoWebApp : redirect user to payment page
+RapaygoPaymentGateway_PHP -> RapaygoWebApp : redirect user to success payment
 User -> RapaygoWebApp: Pays invoice with wallet
-RapaygoWebApp -> RapaygoPaymentGateway_PHP: use callback function\nhttp://rapaygo.com/?wc-api=CALLBACK
+RapaygoWebApp -> RapaygoAPIv1: Pays invoice 
+RapaygoAPIv1 -> RapaygoRestWallet: Pays bot11 invoice
+RapaygoRestWallet -> RapaygoPaymentListener: Publish payment event as PAID
+RapaygoPaymentListener -> RapaygoPaymentGateway_PHP: use webhook callback on PAID
 RapaygoPaymentGateway_PHP -> RapaygoPaymentGateway_PHP: update cart
-RapaygoPaymentGateway_PHP -> User : redirect to thank you page
+RapaygoPaymentGateway_PHP -> User : redirect to success page
 
 @enduml
