@@ -94,6 +94,8 @@ function woocommerce_rapaygo_init()
             $this->api_url               = $this->get_option('api_url');
             $this->rapaygo_app_url       = $this->get_option('rapaygo_app_url');
             $this->success_redirect      = $this->get_option('success_redirect');
+
+            $this->store_logo_url      = $this->get_option('store_logo_url');
             
 
             // Define debugging & informational settings
@@ -126,17 +128,6 @@ function woocommerce_rapaygo_init()
 
             // enque custom scripts
             add_action('wp_enqueue_scripts', array($this, 'rapaygo_payment_gateway_scripts'));
-
-
-            // register the callback
-            // add_action('woocommerce_api_'.strtolower(get_class($this)), 'rapaygo_callback_handler');
-
-            // Additional token initialization.
-            // if (rapaygo_get_additional_tokens()) {
-            //   $this->initialize_additional_tokens();
-            // }
-
-            // set the callback handler 
             
 
             $this->is_initialized = true;
@@ -168,11 +159,7 @@ function woocommerce_rapaygo_init()
             if ( ! is_ssl() ) {
                 return;
             }
-        
-            // payment processor JS that allows to get a token
-            // replace this with your own JS file when you get it distributed
-            // wp_enqueue_script( 'ybc_js', 'https://www.example.com/api/get-token.js' );
-        
+             
             // custom JS that works with get-token.js
             wp_register_script( 'woocommerce_pay_rapaygo', plugins_url( 'assets/js/token-script.js', __FILE__ ), array( 'jquery', 'rapaygo_js' ) );
         
@@ -273,10 +260,17 @@ function woocommerce_rapaygo_init()
                 'success_redirect' => array(
                     'title'       => __('Success Redirect Page', 'rapaygo-for-woocommerce'),
                     'type'        => 'text',
-                    'description' => __('The page you want successful payments to be direct to from rapaygo.com', 'rapaygo-for-woocommerce'),
+                    'description' => __('The page (URL suffix without site url prefix) you want successful payments to be direct to from rapaygo.com', 'rapaygo-for-woocommerce'),
                     'default'     => '',
                     'desc_tip'    => true,
                ),
+                'store_logo_url' => array(
+                    'title'       => __('Store Logo Url', 'rapaygo-for-woocommerce'),
+                    'type'        => 'text',
+                    'description' => __('The site media link (URL suffix without site url prefix) for the invoice to display.', 'rapaygo-for-woocommerce'),
+                    'default'     => '',
+                    'desc_tip'    => true,
+                ),               
                'debug' => array(
                     'title'       => __('Debug Log', 'rapaygo-for-woocommerce'),
                     'type'        => 'checkbox',
@@ -468,57 +462,26 @@ function woocommerce_rapaygo_init()
              return $url;
         }
 
-        // /**
-        //  * Validate Redirect URL
-        //  */
-        // public function validate_redirect_url_field()
-        // {
-        //     $redirect_url = $this->get_option('redirect_url', '');
-
-        //     if ( isset( $_POST['woocommerce_rapaygo_redirect_url'] ) ) {
-        //          if (filter_var($_POST['woocommerce_rapaygo_redirect_url'], FILTER_VALIDATE_URL) !== false) {
-        //              $redirect_url = $_POST['woocommerce_rapaygo_redirect_url'];
-        //          } else {
-        //              $redirect_url = '';
-        //          }
-        //      }
-        //      return $redirect_url;
-        // }
-
-        /**
-         * Output for the order received page.
-         */
-        // public function thankyou_page($order_id)
-        // {
-        //     $this->log('    [Info] Entered thankyou_page with order_id =  ' . $order_id);
-
-        //     // Remove cart
-        //     WC()->cart->empty_cart();
-
-        //     // Intentionally blank.
-
-        //     $this->log('    [Info] Leaving thankyou_page with order_id =  ' . $order_id);
-        // }
-
-        public function get_rapaygo_redirect($order_id, $order, $payment_hash)
+        public function get_rapaygo_redirect($order_id, $order, $order_price, $currency, $payment_hash)
         {
             $this->log('    [Info] Entered get_rapaygo_redirect with order_id =  ' . $order_id);
-
-            // if('' == get_option('permalink_structure')){
-            //     $callback = site_url().'/?wc-api=WC_Gateway_Rapaygo';
-            // } else {
-            //     $callback = site_url().'/wc-api/WC_Gateway_Rapaygo/';
-            // }
-
-            // $raypago_success_redirect_encoded = urlencode_deep(  $callback );
 
             // hard coded to thank you page
             $site_success = site_url().$this->success_redirect;
             $raypago_success_redirect_encoded = urlencode_deep(  $site_success );
 
-            //create the redirect to rapaygo
-            $redirect = $this->rapaygo_app_url . '/invoice_payment/pay/' . $payment_hash . '?success=' . $raypago_success_redirect_encoded . '&order_id=' . $order_id;
+            $store_logo_url_encoded =  urlencode_deep(site_url().$this->store_logo_url);
 
+            //get the order total and currency
+
+            //create the redirect to rapaygo
+            $redirect = $this->rapaygo_app_url . '/invoice_payment/pay/' .  $payment_hash . 
+                '?success=' . $raypago_success_redirect_encoded . 
+                '&order_id=' . $order_id . 
+                '&amount_fiat=' . $order_price . 
+                '&currency=' . $currency .
+                '&store_logo_url=' . $store_logo_url_encoded ;
+                
 
             return $redirect;
         }
@@ -528,11 +491,6 @@ function woocommerce_rapaygo_init()
             $auth_url = $this->api_url . '/auth/access_token';
             $this->log('[Info] attempting to get credentials for api key = ' . $api_key . ' at url:' . $auth_url);
 
-            // Array with arguments for API interaction
-            // $args = array(
-            
-            // );           
-            // $auth_response = wp_remote_post( $auth_url, $args );
 
             $array_with_parameters = array(
                     'username'      => $api_key,
@@ -622,11 +580,11 @@ function woocommerce_rapaygo_init()
                 $raypago_webhook = site_url().'/wc-api/WC_Gateway_Rapaygo/';
             }
 
-            // $raypago_webhook_encoded = urlencode_deep(  $callback );
+            $currency = get_woocommerce_currency();
 
             $invoice_request = array(
                 'amount_fiat'       => $order_price,
-                'currency'          => get_woocommerce_currency(),
+                'currency'          => $currency,
                 'memo'              => 'online order id:'. $order_id . ' order number:' . $order->get_order_number(),
                 'webhook'           => $raypago_webhook,
                 'webhook_external_id' => $order_id
@@ -657,7 +615,7 @@ function woocommerce_rapaygo_init()
                 // this could be configured by the user
                 $order->update_status('on-hold', __('PENDING lightning invoice payment '. $invoice_info['payment_hash']));
 
-                $rapaygo_redirect = $this->get_rapaygo_redirect($order_id, $order, $invoice_info['payment_hash']);
+                $rapaygo_redirect = $this->get_rapaygo_redirect($order_id, $order, $order_price, $currency, $invoice_info['payment_hash']);
                 
                 if($rapaygo_redirect)
                 {
@@ -880,33 +838,14 @@ function extractCustomnerFromUrl($url)
 
 function rapaygo_callback_handler()
 {
-    // $this->log('[Info] CALLBACK Entered rapaygo_callback_handler()...');
 
     $logger = new WC_Logger();
     $logger->add('rapaygo', $message);
 
-    $logger->add('rapaygo', 'successfully got callback: A');
-
-    // if(!empty($_POST))
-    // {
-    //     // when using application/x-www-form-urlencoded or multipart/form-data as the HTTP Content-Type in the request
-    //     // NOTE: if this is the case and $_POST is empty, check the variables_order in php.ini! - it must contain the letter P
-    //     return $_POST;
-    // }
-
-    // $logger->add('rapaygo', 'successfully got callback: B');
-    // $logger->add('rapaygo', 'successfully got callback: B2 ' . var_export($_POST, true));
-
     // when using application/json as the HTTP Content-Type in the request 
     $raw_post = file_get_contents('php://input');
-    $logger->add('rapaygo', 'successfully got callback: RAW '. $raw_post);
     $post = json_decode($raw_post, true);
-    // if(json_last_error() == JSON_ERROR_NONE)
-    // {
-    //     return $post;
-    // }
-
-    $logger->add('rapaygo', 'successfully got callback: C');
+  
 
     // {
     //     "id": 19,
