@@ -91,8 +91,8 @@ function woocommerce_rapaygo_init()
 			$this->api_key               = $this->get_option('api_key');
 			$this->api_secret            = $this->get_option('api_secret');
 
-            $this->api_url               = 'http://172.17.0.1:5020';
-            $this->rapaygo_app_url       = 'http://localhost:3000';
+            $this->api_url               = $this->get_option('api_url');
+            $this->rapaygo_app_url       = $this->get_option('rapaygo_app_url');
             $this->success_redirect      = $this->get_option('success_redirect');
             
 
@@ -240,7 +240,22 @@ function woocommerce_rapaygo_init()
                     'description' => __('Message to explain how the customer will be paying for the purchase.', 'rapaygo-for-woocommerce'),
                     'default'     => 'You will be redirected to Rapaygo to complete your purchase.',
                     'desc_tip'    => true,
-               ),
+                ),
+
+                'api_url' => array(
+                    'title'       => __('API Url', 'rapaygo-for-woocommerce'),
+                    'type'        => 'text',
+                    'description' => __('Rapaygo API Endpoint.', 'rapaygo-for-woocommerce'),
+                    'default'     => 'https://api.rapaygo.com/v1',
+                    'desc_tip'    => true,
+                ),
+                'rapaygo_app_url' => array(
+                        'title'       => __('Application Url', 'rapaygo-for-woocommerce'),
+                        'type'        => 'text',
+                        'description' => __('Rapaygo API Endpoint.', 'rapaygo-for-woocommerce'),
+                        'default'     => 'https://rapaygo.com',
+                        'desc_tip'    => true,
+                ),
                 'api_key' => array(
                       'title'       => __('API Key', 'rapaygo-for-woocommerce'),
                       'type'        => 'text',

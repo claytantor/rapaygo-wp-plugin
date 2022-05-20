@@ -20,7 +20,12 @@ services:
       - wordpress_data:/var/www/html
     ports:
       - "8000:80"
+      - "443:443"
     restart: always
+
+    env_file:
+        - env/${ENV_NAME}.env
+
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wordpress
