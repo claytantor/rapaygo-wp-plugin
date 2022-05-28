@@ -7,7 +7,7 @@
     Author:      Rapaygo LLC
     Author URI:  https://rapaygo.com
 
-    Version:           3.0.16
+    Version:           1.0.16
     License:           Copyright 2011-2018 Rapaygo & BitPay Inc., MIT License
     License URI:       https://github.com/claytantor/rapaygo-wp-plugin/rapaygo-for-woocommerce/LICENSE
     GitHub Plugin URI: https://github.com/claytantor/rapaygo-wp-plugin/rapaygo-for-woocommerce
