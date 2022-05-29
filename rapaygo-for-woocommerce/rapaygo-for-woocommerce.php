@@ -495,7 +495,7 @@ function woocommerce_rapaygo_init()
             $array_with_parameters = array(
                     'username'      => $api_key,
                     'pass_phrase'   => $api_secret,
-                    'type'          => "wallet_owner"
+                    'type'          => "pos_user"
             );
 
             $auth_response = wp_remote_post($auth_url, array(

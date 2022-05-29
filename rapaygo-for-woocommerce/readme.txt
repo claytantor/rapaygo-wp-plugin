@@ -13,7 +13,7 @@ With rapaygo Payment Gateway for WooCommerce, you can start accepting Bitcoin pa
 
 == Description ==
 
-Rapaygo For WooCommerce is a payment Gateway plugin for accepting Bitcoin payments on the lightning network by using rapaygo.com as a payment gateway. To use the plugin you will need to sign up with rapaygo.com and use your API key generatoed for payments on the site. See [Rapaygo For WooCommerce Documentation](https://rapaygo.com/docs/#/woo) for our complete Documentation guide.
+Rapaygo For WooCommerce is a payment Gateway plugin for accepting Bitcoin payments on the lightning network by using rapaygo.com as a payment gateway. To use the plugin you will need to sign up with rapaygo.com and use your API key generated for payments on the site. See [Rapaygo For WooCommerce Documentation](https://rapaygo.com/docs/#/woo) for our complete Documentation guide.
 
 = Take instanaious Bitcoin payments easily and directly on your store using the Lightning Network =
 
