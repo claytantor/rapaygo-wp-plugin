@@ -505,21 +505,6 @@ function woocommerce_rapaygo_init()
                 'data_format' => 'body',
             ));
 
-            // $response = wp_remote_post( $url, array(
-            //     'method'      => 'POST',
-            //     'timeout'     => 45,
-            //     'redirection' => 5,
-            //     'httpversion' => '1.0',
-            //     'blocking'    => true,
-            //     'headers'     => array(),
-            //     'body'        => array(
-            //         'username' => 'bob',
-            //         'password' => '1234xyz'
-            //     ),
-            //     'cookies'     => array()
-            //     )
-            // );
-
             return $auth_response;
         }
 
@@ -846,10 +831,10 @@ function rapaygo_callback_handler()
     $raw_post = file_get_contents('php://input');
     $post = json_decode($raw_post, true);
   
-
+    // uses the rapaygo v1 api. 
     // {
     //     "id": 19,
-    //     "checking_id": "5194bce8099af5af5f303e779f457584d7d01bb72198f13363f8fb00c1e0c164",
+    //     "checking_id": "5194bce8099af5afsood7d01bb72198f13363f8fb00c1e0c164",
     //     "pending": false,
     //     "msat_amount": 830000,
     //     "amount": 830,
@@ -865,8 +850,8 @@ function rapaygo_callback_handler()
     //     "created_at_ts": 1652983100.130105,
     //     "updated_at": "2022-05-19 17:58:30.279859",
     //     "preimage": "",
-    //     "payment_hash": "5194bce8099af5af5f303e779f457584d7d01bb72198f13363f8fb00c1e0c164",
-    //     "payment_request": "lnbc8300n1p3gdpfupp52x2te6qfnt667hes8eme73t4sntaqxahyxv0zvmrlrasps0qc9jqhp5wyghpezt9ztnacz2z8u5eg28ev39k8nyd0gkq2pxgrmucgmevmgqcqzpgxqyz5vqsp58avv4zyscd8ed59mmrlypvjeueww9rzemffum9lamea7rk4t36qs9qyyssqxh00288a5c3ygk09993zlvlu8dtqhr2ppss227m2g6gj9trtlg24vwv5lmqwhzs9kp07ynflf3mky4uqhf44xvt6wvxx37htggkdjacqsemp8a",
+    //     "payment_hash": "5194bce8099af5af5f30sooped01bb72198f13363f8fb00c1e0c164",
+    //     "payment_request": "lnbc8300n1p3gdpfupspphes8eme73t4sntaqxahyxv0zvmrlrasps0qc9jqhp5wyghpezt9ztnacz2z8u5eg28ev39k8nyd0gkq2pxgrmucgmevmgqcqzpgxqyz5vqsp58avv4zyscd8ed59mmrlypvjeueww9rzemffum9lamea7rk4t36qs9qyyssqxh00288a5c3ygk09993zlvlu8dtqhr2ppss227m2g6gj9trtlg24vwv5lmqwhzs9kp07ynflf3mky4uqhf44xvt6wvxx37htggkdjacqsemp8a",
     //     "extra": "",
     //     "wallet_id": 1,
     //     "webhook": "http://localhost:8000/?wc-api=WC_Gateway_Rapaygo",

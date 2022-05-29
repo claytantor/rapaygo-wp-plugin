@@ -68,3 +68,8 @@ Your personal information, email address, and all data is encrypted in our datab
 = 1.0.16 =
 * First GA version.
 * All core capabilities included for MVP.
+
+== Upgrade Notice ==
+
+= 1.0.16 =
+This is the latest stable version of the MVP, you need this version to begin.
