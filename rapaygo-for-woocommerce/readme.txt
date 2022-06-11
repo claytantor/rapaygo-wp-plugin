@@ -2,7 +2,7 @@
 Contributors: claytantor
 Tags: lightning network, bitcoin, payments, payment request, woocommerce, automattic
 Requires at least: 5.7
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 7.0
 Stable tag: 6.4.0
 Requires PHP: 7.0
