@@ -2,8 +2,8 @@
 Contributors: claytantor
 Tags: Lightning Network, Bitcoin, Payments, WooCommerce
 Requires at least: 4.7
-Tested up to: 5.4
-Stable tag: 4.3
+Tested up to: 6.0
+Stable tag: 1.0.16
 Requires PHP: 7.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
