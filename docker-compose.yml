@@ -6,6 +6,8 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     restart: always
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
       MYSQL_DATABASE: wordpress
@@ -19,7 +21,7 @@ services:
     volumes:
       - wordpress_data:/var/www/html
     ports:
-      - "8000:80"
+      - "80:80"
       - "443:443"
     restart: always
 
