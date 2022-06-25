@@ -82,20 +82,20 @@ function woocommerce_rapaygo_init()
 
             $this->init_settings();
             // Define user set variables
-            $this->title              = $this->get_option('title');
-            $this->description        = $this->get_option('description');
-            $this->order_states       = $this->get_option('order_states');
+            $this->title              = sanitize_text_field( $this->get_option('title') );
+            $this->description        = sanitize_textarea_field( $this->get_option('description') );
+            $this->order_states       = $this->rapaygo_sanitize_array($this->get_option('order_states'));
             $this->debug              = 'yes' === $this->get_option('debug', 'no');
 
 			// define rapaygo settings
-			$this->api_key               = $this->get_option('api_key');
-			$this->api_secret            = $this->get_option('api_secret');
+			$this->api_key               = sanitize_text_field( $this->get_option('api_key') );
+			$this->api_secret            = sanitize_text_field( $this->get_option('api_secret') );
 
-            $this->api_url               = $this->get_option('api_url');
-            $this->rapaygo_app_url       = $this->get_option('rapaygo_app_url');
-            $this->success_redirect      = $this->get_option('success_redirect');
+            $this->api_url               = sanitize_url( $this->get_option('api_url') );
+            $this->rapaygo_app_url       = sanitize_url( $this->get_option('rapaygo_app_url') );
+            $this->success_redirect      = sanitize_url( $this->get_option('success_redirect') );
 
-            $this->store_logo_url      = $this->get_option('store_logo_url');
+            $this->store_logo_url      = sanitize_url( $this->get_option('store_logo_url') );
             
 
             // Define debugging & informational settings
@@ -131,6 +131,19 @@ function woocommerce_rapaygo_init()
             
 
             $this->is_initialized = true;
+        }
+
+        public function rapaygo_sanitize_array($array) {
+            foreach ( $array as $key => &$value ) {
+                if ( is_array( $value ) ) {
+                    $value = $this->rapaygo_sanitize_array($value);
+                }
+                else {
+                    $value = sanitize_text_field( $value );
+                }
+            }
+        
+            return $array;
         }
 
         public function rapaygo_payment_gateway_scripts() {
@@ -180,7 +193,7 @@ function woocommerce_rapaygo_init()
             if (method_exists($order, 'get_payment_method')) {
                 $actualMethod = $order->get_payment_method();
             } else {
-                $actualMethod = get_post_meta( $order->get_id(), '_payment_method', true );
+                $actualMethod = sanitize_text_field( get_post_meta( $order->get_id(), '_payment_method', true ) );
             }
 
             return (false !== strpos($actualMethod, 'rapaygo'));
@@ -331,24 +344,24 @@ function woocommerce_rapaygo_init()
                             foreach ($bp_statuses as $bp_state => $bp_name) {
                             ?>
                             <tr>
-                            <th><?php echo $bp_name; ?></th>
+                            <th><?php echo esc_html( $bp_name ); ?></th>
                             <td>
-                                <select name="woocommerce_rapaygo_order_states[<?php echo $bp_state; ?>]">
+                                <select name="woocommerce_rapaygo_order_states[<?php echo esc_attr( $bp_state ); ?>]">
                                 <?php
 
                                 $order_states = get_option('woocommerce_rapaygo_settings');
                                 $order_states = $order_states['order_states'];
                                 foreach ($wc_statuses as $wc_state => $wc_name) {
-                                    $current_option = $order_states[$bp_state];
+                                    $current_option = sanitize_text_field( $order_states[$bp_state] );
 
                                     if (true === empty($current_option)) {
-                                        $current_option = $df_statuses[$bp_state];
+                                        $current_option = sanitize_text_field( $df_statuses[$bp_state] );
                                     }
 
                                     if ($current_option === $wc_state) {
-                                        echo "<option value=\"$wc_state\" selected>$wc_name</option>\n";
+                                        echo "<option value=\"".esc_attr( $wc_state )."\" selected>".esc_html( $wc_name )."</option>\n";
                                     } else {
-                                        echo "<option value=\"$wc_state\">$wc_name</option>\n";
+                                        echo "<option value=\"".esc_attr( $wc_state )."\">".esc_html( $wc_name )."</option>\n";
                                     }
                                 }
 
@@ -396,11 +409,12 @@ function woocommerce_rapaygo_init()
                 $order_states = $bp_settings['order_states'];
 
                 foreach ($bp_statuses as $bp_state => $bp_name) {
+                    $bp_state = sanitize_text_field( $bp_state );
                     if (false === isset($_POST['woocommerce_rapaygo_order_states'][ $bp_state ])) {
                         continue;
                     }
 
-                    $wc_state = $_POST['woocommerce_rapaygo_order_states'][ $bp_state ];
+                    $wc_state = sanitize_text_field( $_POST['woocommerce_rapaygo_order_states'][ $bp_state ] );
 
                     if (true === array_key_exists($wc_state, $wc_statuses)) {
                         $this->log('    [Info] Updating order state ' . $bp_state . ' to ' . $wc_state);
@@ -440,7 +454,7 @@ function woocommerce_rapaygo_init()
 
             $order_states_key = $this->plugin_id . $this->id . '_order_states';
             if ( isset( $_POST[ $order_states_key ] ) ) {
-                $order_states = $_POST[ $order_states_key ];
+                $order_states = sanitize_text_field( $_POST[ $order_states_key ] );
             }
             return $order_states;
         }
@@ -454,7 +468,7 @@ function woocommerce_rapaygo_init()
 
             if ( isset( $_POST[ $this->plugin_id . $this->id . '_' . $key ] ) ) {
                  if (filter_var($_POST[ $this->plugin_id . $this->id . '_' . $key ], FILTER_VALIDATE_URL) !== false) {
-                     $url = $_POST[ $this->plugin_id . $this->id . '_' . $key ];
+                     $url = sanitize_url( $_POST[ $this->plugin_id . $this->id . '_' . $key ] );
                  } else {
                      $url = '';
                  }
@@ -661,7 +675,7 @@ function woocommerce_rapaygo_init()
         // Add additional tokens as separate payment methods.
         if ($additional_tokens = rapaygo_get_additional_tokens()) {
             foreach ($additional_tokens as $token) {
-              $methods[] = $token['classname'];
+              $methods[] = sanitize_text_field( $token['classname'] );
             }
         }
 
@@ -727,7 +741,7 @@ function woocommerce_rapaygo_init()
             $this_plugin = plugin_basename(__FILE__);
         }
 
-        if ($file == $this_plugin) {
+        if ($file === $this_plugin) {
             $log_file = 'rapaygo-' . sanitize_file_name( wp_hash( 'rapaygo' ) ) . '-log';
             $settings_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=wc-settings&tab=checkout&section=wc_gateway_rapaygo">Settings</a>';
             $logs_link = '<a href="' . get_bloginfo('wpurl') . '/wp-admin/admin.php?page=wc-status&tab=logs&log_file=' . $log_file . '">Logs</a>';
@@ -769,7 +783,7 @@ function woocommerce_rapaygo_init()
                 $status_desctiption = _x(ucfirst($status), 'woocommerce_rapaygo');
                 break;
         }
-        echo str_replace('{$paymentStatus}', $status_desctiption, $payment_status);
+        echo esc_html( str_replace('{$paymentStatus}', $status_desctiption, $payment_status) );
     }
     add_action("woocommerce_thankyou_rapaygo", 'action_woocommerce_thankyou_rapaygo', 10, 1);
 }
@@ -877,8 +891,8 @@ function rapaygo_callback_handler()
     
     $logger->add('rapaygo', 'successfully got callback: ' . var_export($post, true));
 
-    $order_id = isset($post['webhook_external_id']) ? $post['webhook_external_id'] : null;
-    $payment_hash = isset($post['payment_hash']) ? $post['payment_hash'] : null;
+    $order_id = isset($post['webhook_external_id']) ? absint( $post['webhook_external_id'] ) : null;
+    $payment_hash = isset($post['payment_hash']) ? sanitize_text_field( $post['payment_hash'] ) : null;
 
     // // if the backend to make sure they paid the update
     $order = wc_get_order( $order_id );
