@@ -68,3 +68,8 @@ Your personal information, email address, and all data is encrypted in our datab
 = 1.0.16 =
 * First GA version.
 * All core capabilities included for MVP.
+
+= 1.0.17 =
+* changed validation and sanitize methods
+* added init callbacks
+* moved to external class file 
