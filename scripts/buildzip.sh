@@ -1,5 +1,7 @@
 #!/bin/bash
 BASE_DIR=$(pwd)
-VERSION='1.0.16'
+VERSION=$1
 BASE_NAME='rapaygo-for-woocommerce'
-zip -r $BASE_NAME-$VERSION.zip $BASE_DIR/rapaygo-for-woocommerce
+rm $BASE_DIR/$BASE_NAME*.zip
+zip -r $BASE_NAME-$VERSION.zip ./rapaygo-for-woocommerce
+cp $BASE_NAME-$VERSION.zip $BASE_NAME.zip
