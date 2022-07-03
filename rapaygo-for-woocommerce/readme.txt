@@ -4,7 +4,7 @@ Tags: lightning network, bitcoin, payments, payment request, woocommerce, automa
 Requires at least: 5.7
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 1.0.16
+Stable tag: 1.0.18
 Requires PHP: 7.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
@@ -15,7 +15,7 @@ With rapaygo Payment Gateway for WooCommerce, you can start accepting Bitcoin pa
 
 Rapaygo For WooCommerce is a payment Gateway plugin for accepting Bitcoin payments on the lightning network by using rapaygo.com as a payment gateway. To use the plugin you will need to sign up with rapaygo.com and use your API key generated for payments on the site. See [Rapaygo For WooCommerce Documentation](https://rapaygo.com/docs/#/woo) for our complete Documentation guide.
 
-= Take instanaious Bitcoin payments easily and directly on your store using the Lightning Network =
+= Take instantaneous Bitcoin payments easily and directly on your store using the Lightning Network =
 
 The Rapaygo plugin extends WooCommerce allowing you to take payments directly on your store via rapaygo’s API for the Lighning Network. Rapaygo is a simple way to accept Bitcoin payments online instanaiously using the power of the Lightning Network. 
 
@@ -73,3 +73,6 @@ Your personal information, email address, and all data is encrypted in our datab
 * changed validation and sanitize methods
 * added init callbacks
 * moved to external class file 
+
+= 1.0.18 =
+* align versions with stable tag

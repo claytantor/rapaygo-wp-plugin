@@ -7,7 +7,7 @@
     Author:      Rapaygo LLC
     Author URI:  https://rapaygo.com
 
-    Version:           1.0.17
+    Version:           1.0.18
     License:           Copyright 2011-2018 Rapaygo & BitPay Inc., MIT License
     License URI:       https://github.com/claytantor/rapaygo-wp-plugin/rapaygo-for-woocommerce/LICENSE
     GitHub Plugin URI: https://github.com/claytantor/rapaygo-wp-plugin/rapaygo-for-woocommerce
@@ -23,7 +23,7 @@ if (false === defined('ABSPATH')) {
     exit;
 }
 
-define("RAPAYGO_VERSION", "1.0.17");
+define("RAPAYGO_VERSION", "1.0.18");
 define( 'RAPAYGO_SITE_URL', site_url() );
 
 // Ensures WooCommerce is loaded before initializing the BitPay plugin
