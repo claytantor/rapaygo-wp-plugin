@@ -445,14 +445,13 @@ class WC_Gateway_Rapaygo extends WC_Payment_Gateway
 
         public function get_access_token($api_key, $api_secret){
 
-            $auth_url = $this->api_url . '/auth/access_token';
+            $auth_url = $this->api_url . '/auth/kry';
             $this->log('[Info] attempting to get credentials for api key = ' . $api_key . ' at url:' . $auth_url);
 
 
             $array_with_parameters = array(
-                    'username'      => $api_key,
-                    'pass_phrase'   => $api_secret,
-                    'type'          => "pos_user"
+                    'key'      => $api_key,
+                    'secret'   => $api_secret
             );
 
             $auth_response = wp_remote_post($auth_url, array(
