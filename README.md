@@ -51,3 +51,6 @@ http://localhost:8000/
 
 ## deploy the plugin
 `sudo bash ./scripts/deploy-local.sh`
+
+## Build the zip
+`sudo bash ./scripts/buildzip.sh 1.0.18`
