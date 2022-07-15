@@ -4,7 +4,7 @@ Tags: lightning network, bitcoin, payments, payment request, woocommerce, automa
 Requires at least: 5.7
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 1.0.18
+Stable tag: 1.0.19
 Requires PHP: 7.0
 License: MIT
 License URI: https://opensource.org/licenses/MIT
@@ -76,3 +76,7 @@ Your personal information, email address, and all data is encrypted in our datab
 
 = 1.0.18 =
 * align versions with stable tag
+
+= 1.0.19 =
+* image assets missing from build
+

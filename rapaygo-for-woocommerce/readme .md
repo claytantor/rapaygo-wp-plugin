@@ -76,3 +76,6 @@ Your personal information, email address, and all data is encrypted in our datab
 
 = 1.0.18 =
 * align versions with stable tag
+
+= 1.0.19 =
+* image assets missing from build

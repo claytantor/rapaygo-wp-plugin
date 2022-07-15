@@ -53,4 +53,11 @@ http://localhost:8000/
 `sudo bash ./scripts/deploy-local.sh`
 
 ## Build the zip
-`sudo bash ./scripts/buildzip.sh 1.0.18`
+`sudo bash ./scripts/buildzip.sh 1.0.19`
+
+
+## copy to svn
+
+
+
+

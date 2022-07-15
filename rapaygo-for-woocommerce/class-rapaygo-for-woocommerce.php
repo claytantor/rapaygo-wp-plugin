@@ -238,7 +238,7 @@ class WC_Gateway_Rapaygo extends WC_Payment_Gateway
                'support_details' => array(
                     'title'       => __( 'Plugin & Support Information', 'rapaygo' ),
                     'type'        => 'title',
-                    'description' => sprintf(__('This plugin version is %s and your PHP version is %s. If you need assistance, please come on our chat https://chat.rapaygoserver.org. Thank you for using Rapaygo!', 'rapaygo-for-woocommerce'), constant("RAPAYGO_VERSION"), PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION),
+                    'description' => sprintf(__('This plugin version is %s and your PHP version is %s. If you need assistance, you can access our support portal at https://rapaygo.freshdesk.com/support/home. Thank you for using Rapaygo!', 'rapaygo-for-woocommerce'), constant("RAPAYGO_VERSION"), PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION),
                ),
            );
 
