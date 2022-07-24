@@ -37,7 +37,7 @@ docker volume create --driver local \
 
 ## up docker 
 ```
-clay@orion-lap:~/data/github.com/claytantor/rapaygo-wp-plugin$ ENV_NAME=dev docker-compose up -d
+clay@orion-lap:~/data/github.com/claytantor/rapaygo-wp-plugin$ ENV_NAME=local docker-compose up -d
 Creating network "rapaygo-wp-plugin_default" with the default driver
 Creating volume "rapaygo-wp-plugin_db_data" with default driver
 Creating volume "rapaygo-wp-plugin_wordpress_data" with default driver
@@ -58,4 +58,4 @@ http://localhost:8000/
 
 
 
-
+QV*3Qvy8IHm5Tqc!P4
